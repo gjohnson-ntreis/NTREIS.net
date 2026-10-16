@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NTREIS Administration — Code deployment and site management.">
+  <title>Admin | NTREIS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:#ffffff;color:#0A0A20;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+
+/* TYPOGRAPHY */
+h1{font-family:'Montserrat',sans-serif;font-size:clamp(2.75rem,4.2vw,4.75rem);font-weight:800;line-height:1.05;letter-spacing:-0.03em}
+h2{font-family:'Montserrat',sans-serif;font-size:clamp(2rem,4.5vw,4rem);font-weight:800;line-height:1.05;letter-spacing:-0.025em}
+h3{font-family:'Montserrat',sans-serif;font-size:clamp(1.1rem,2.2vw,1.5rem);font-weight:700;line-height:1.2;letter-spacing:-0.01em}
+h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-height:1.3}
+.eyebrow{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;display:block;margin-bottom:16px}
+.eyebrow-o{color:#F47729}
+.body-txt{font-size:15px;line-height:1.9;color:#5A5A72}
+.body-sm{font-size:13px;line-height:1.75;color:#5A5A72}
+
+/* NAV */
+.nt-nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(0,7,68,0.96);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:56px;
+  border-bottom:1px solid rgba(255,255,255,0.08)
+}
+.nav-links{display:flex;align-items:center;gap:0}
+.nav-link{
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:rgba(255,255,255,0.5);padding:0 16px;height:56px;
+  display:flex;align-items:center;transition:color .15s
+}
+.nav-link:hover,.nav-link.act{color:#ffffff}
+.nav-cta{
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:#F47729;border:1px solid #F47729;border-radius:6px;padding:8px 18px;
+  display:flex;align-items:center;transition:all .15s
+}
+.nav-cta:hover{background:#F47729;color:#ffffff;box-shadow:0 0 20px rgba(244,119,41,0.45)}
+
+/* LAYOUT */
+.wrap{max-width:min(1200px,90vw);margin:0 auto;padding:0 48px}
+.sec{padding:64px 0}
+
+/* ADMIN SPECIFIC */
+.admin-card{
+  background:#ffffff;
+  border:1px solid rgba(0,7,68,0.08);
+  border-radius:12px;
+  padding:32px;
+  margin-bottom:32px;
+  box-shadow:0 2px 12px rgba(0,7,68,0.04);
+}
+.admin-card h3{color:#000744;margin-bottom:8px}
+.form-group{margin-bottom:20px}
+.form-group label{
+  display:block;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;color:#000744;margin-bottom:8px
+}
+.form-group input,.form-group textarea{
+  width:100%;padding:12px 16px;border:1px solid rgba(0,7,68,0.15);border-radius:6px;
+  font-family:'Outfit',sans-serif;font-size:15px;background:#fafafa
+}
+.form-group textarea{min-height:80px;resize:vertical}
+.btn-admin{
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;background:#F47729;color:#ffffff;border:none;border-radius:6px;
+  padding:12px 24px;cursor:pointer;transition:all .15s
+}
+.btn-admin:hover{background:#e0661a;box-shadow:0 0 16px rgba(244,119,41,0.4)}
+.btn-admin:disabled{opacity:0.6;cursor:not-allowed}
+.log-output{
+  background:#0A0A20;color:#e0e0e0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:13px;line-height:1.5;padding:20px;border-radius:8px;min-height:160px;
+  white-space:pre-wrap;overflow-x:auto;margin-top:16px
+}
+.status-badge{
+  display:inline-block;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:4px;margin-left:12px
+}
+.status-idle{background:rgba(0,7,68,0.08);color:#5A5A72}
+.status-running{background:#FFB756;color:#0A0A20}
+.status-success{background:#1B2581;color:#ffffff}
+.status-error{background:#F47729;color:#ffffff}
+
+/* GATE */
+#gate{
+  position:fixed;inset:0;z-index:2000;background:rgba(0,7,68,0.96);
+  display:flex;align-items:center;justify-content:center;padding:24px
+}
+.gate-box{
+  background:#ffffff;border-radius:12px;padding:40px;max-width:400px;width:100%;
+  text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)
+}
+.gate-box h2{color:#000744;margin-bottom:8px;font-size:1.75rem}
+.gate-box p{color:#5A5A72;margin-bottom:24px;font-size:14px}
+#gateCode{width:100%;padding:14px;border:1px solid rgba(0,7,68,0.15);border-radius:6px;font-size:16px;text-align:center;letter-spacing:0.2em;margin-bottom:16px}
+#gateError{color:#F47729;font-size:13px;min-height:20px;margin-bottom:8px}
+
+/* FOOTER */
+.nt-foot{background:#000744;color:rgba(255,255,255,0.6);padding:48px 0 24px;font-size:13px}
+.foot-bot{max-width:min(1200px,90vw);margin:32px auto 0;padding:0 48px;display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.08);padding-top:24px}
+
+#mainContent{display:none}
+  </style>
+</head>
+<body>
+<div id="gate">
+  <div class="gate-box">
+    <span class="eyebrow eyebrow-o">Restricted</span>
+    <h2>Admin Access</h2>
+    <p>Enter the portal admin code to continue.</p>
+    <input type="password" id="gateCode" placeholder="••••••••" autocomplete="off">
+    <div id="gateError"></div>
+    <button id="gateBtn" class="btn-admin">Continue</button>
+  </div>
+</div>
+
+<div id="mainContent" style="padding-top:56px;">
+<nav class="nt-nav">
+  <a href="index.html"><img src="assets/logo.png" alt="NTREIS" style="height:28px;width:auto;filter:brightness(0) invert(1);"></a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="about.html" class="nav-link">About</a>
+    <a href="admin.html" class="nav-link act">Admin</a>
+  </div>
+  <a href="https://ntreis.clareityiam.net/idp/login" class="nav-cta">MLS Login</a>
+</nav>
+
+<!-- PAGE HERO -->
+<section style="background:#000744;padding:80px 0 48px;">
+  <div class="wrap">
+    <span class="eyebrow eyebrow-o">Internal</span>
+    <h1 style="color:#ffffff;max-width:16ch;">Administration</h1>
+    <p style="color:rgba(255,255,255,0.7);margin-top:16px;max-width:520px;">Site management tools. Starting with code deployment to GitHub.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+
+    <div class="admin-card">
+      <h3>Code Deployment <span id="status" class="status-badge status-idle">Idle</span></h3>
+      <p class="body-sm" style="margin-bottom:24px;">Push the latest static site changes from the server working directory to the GitHub repository. Requires a configured backend endpoint with repository credentials.</p>
+
+      <div class="form-group">
+        <label for="commitMsg">Commit message</label>
+        <input type="text" id="commitMsg" placeholder="Update site content" value="Update ntreis.net static site">
+      </div>
+
+      <button id="pushBtn" class="btn-admin">Push to GitHub</button>
+      <button id="pullBtn" class="btn-admin" style="margin-left:12px;background:#1B2581;">Pull from GitHub</button>
+
+      <div class="log-output" id="log">Ready. Use Push to send local changes or Pull to bring in newer files from the repository.
+
+Restricted to: html/, data/, js/, and index.html under C:\apps\ntreis.
+GitHub credentials from C:\apps\members-gateway\.env (GITHUB_PAT). Repository: NTREIS.net.</div>
+    </div>
+
+    <div class="admin-card">
+      <h3>Next Steps</h3>
+      <p class="body-txt">This page provides the starting administrative surface. Additional capabilities (SSO-protected access, database tools, sync jobs, etc.) can be added following the pattern used in Jarvis.</p>
+      <ul class="body-sm" style="margin-top:12px;padding-left:20px;color:#5A5A72;">
+        <li>Server-side validation of PORTAL_ADMIN_CODE from C:\apps\members-gateway\.env is required for real protection.</li>
+        <li>Implement the /api/deploy endpoint on the AWS server (Node, PHP, or PowerShell script).</li>
+        <li>Add repository status, last commit, and branch information.</li>
+        <li>Expand with other administrative functions as needed.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<footer class="nt-foot">
+  <div class="foot-bot">
+    <span>&copy; 2026 North Texas Real Estate Information Systems, Inc.</span>
+    <span>Admin</span>
+  </div>
+</footer>
+</div>
+
+<script>
+const gate = document.getElementById('gate');
+const mainContent = document.getElementById('mainContent');
+const gateCode = document.getElementById('gateCode');
+const gateBtn = document.getElementById('gateBtn');
+const gateError = document.getElementById('gateError');
+
+function unlock() {
+  gate.style.display = 'none';
+  mainContent.style.display = 'block';
+  sessionStorage.setItem('ntreis_admin_ok', '1');
+}
+
+// Restore session if already unlocked in this browser tab
+if (sessionStorage.getItem('ntreis_admin_ok') === '1') {
+  unlock();
+}
+
+gateBtn.addEventListener('click', () => {
+  const code = gateCode.value.trim();
+  if (!code) {
+    gateError.textContent = 'Please enter the admin code.';
+    return;
+  }
+  gateError.textContent = '';
+  gateBtn.disabled = true;
+
+  // Client-side check (wired from PORTAL_ADMIN_CODE). Server-side validation recommended for production.
+  if (code === '07092026') {
+    unlock();
+  } else {
+    gateError.textContent = 'Invalid admin code.';
+    gateBtn.disabled = false;
+  }
+});
+
+gateCode.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') gateBtn.click();
+});
+
+// Existing deploy logic
+const pushBtn = document.getElementById('pushBtn');
+const logEl = document.getElementById('log');
+const statusEl = document.getElementById('status');
+const commitMsg = document.getElementById('commitMsg');
+
+function setStatus(cls, text) {
+  statusEl.className = 'status-badge ' + cls;
+  statusEl.textContent = text;
+}
+
+function appendLog(msg) {
+  logEl.textContent += '\n' + msg;
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+pushBtn.addEventListener('click', async () => {
+  const msg = commitMsg.value.trim() || 'Update ntreis.net static site';
+  pushBtn.disabled = true;
+  setStatus('status-running', 'Running');
+  logEl.textContent = 'Initiating push...\nCommit message: ' + msg + '\n';
+
+  try {
+    const res = await fetch('/members/api/deploy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message || ('HTTP ' + res.status));
+    }
+    appendLog(data.output || data.message || 'Completed.');
+    setStatus('status-success', 'Success');
+  } catch (err) {
+    appendLog('Error: ' + err.message);
+    appendLog('\nBackend not available. To enable this feature, implement a server endpoint that:');
+    appendLog('  1. Changes to C:\\apps\\ntreis');
+    appendLog('  2. Reads GITHUB_PAT from C:\\apps\\members-gateway\\.env');
+    appendLog('  3. Runs git add on html, data, js, and index.html then commit -m "' + msg + '" && git push to NTREIS.net');
+    appendLog('  4. Returns the command output as JSON.');
+    setStatus('status-error', 'Error');
+  } finally {
+    pushBtn.disabled = false;
+  }
+});
+
+const pullBtn = document.getElementById('pullBtn');
+pullBtn.addEventListener('click', async () => {
+  pullBtn.disabled = true;
+  pushBtn.disabled = true;
+  setStatus('status-running', 'Pulling');
+  logEl.textContent = 'Initiating pull from GitHub...\n';
+
+  try {
+    const res = await fetch('/members/api/deploy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'pull' })
+    });
+
+    if (!res.ok) {
+      throw new Error('HTTP ' + res.status + ' — backend endpoint not yet implemented or returned an error.');
+    }
+
+    const data = await res.json().catch(() => ({}));
+    appendLog(data.output || data.message || 'Pull completed.');
+    setStatus('status-success', 'Pulled');
+  } catch (err) {
+    appendLog('Error: ' + err.message);
+    appendLog('\nBackend must support action: "pull" to fetch newer files for html/, data/, js/, and index.html.');
+    setStatus('status-error', 'Error');
+  } finally {
+    pullBtn.disabled = false;
+    pushBtn.disabled = false;
+  }
+});
+
+</script>
+</body>
+</html>

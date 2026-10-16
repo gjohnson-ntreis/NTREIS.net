@@ -1,0 +1,23 @@
+{
+    "mlsSubscribers":  51729,
+    "activeMembers":  56847,
+    "activeOffices":  11009,
+    "activeListings":  87461,
+    "closedListings":  13087,
+    "salesCount30d":  7186,
+    "dollarVolume30d":  3400067194,
+    "medianPrice30d":  359945,
+    "allSalesCount30d":  8512,
+    "allDollarVolume30d":  3886689984,
+    "allMedianPrice30d":  348740,
+    "allSalesCountPrev30d":  11415,
+    "allDollarVolumePrev30d":  5215795847,
+    "allMedianPricePrev30d":  350123,
+    "prevSource":  "jarvis",
+    "currentFrom":  "2026-09-16",
+    "currentTo":  "2026-10-16",
+    "priorFrom":  "2026-08-17",
+    "priorTo":  "2026-09-16",
+    "snapshotAt":  "2026-10-16T03:52:12Z",
+    "publishedAt":  "2026-10-16T10:00:05Z"
+}
