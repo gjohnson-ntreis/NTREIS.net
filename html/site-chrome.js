@@ -38,7 +38,7 @@
       ["News", "/html/news.html"]
     ]},
     { title: "Connect", links: [
-      ["Contact Us", "/html/contact.html"],
+      ["Contact Us", "/html/support.html#contact"],
       ["Media", "/html/media.html"],
       ["LinkedIn", "https://www.linkedin.com/company/ntreis-inc/"],
       ["Facebook", "https://facebook.com/ntreis"]
