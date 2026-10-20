@@ -530,11 +530,11 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
     var t = checked('tin_type'), applied = $('applied').checked;
     ['tin','tin2'].forEach(function (id) {
       var el = $(id);
-      var keep = el.value;               // preserve whatever is already typed
-      el.disabled = !t;
+      el.disabled = !t || applied;
       el.placeholder = applied ? 'Applied For' : t === 'ssn' ? '123-45-6789' : t === 'ein' ? '12-3456789' : 'Select SSN or EIN first';
       el.type = $('show_tin').checked ? 'text' : 'password';
-      if (keep) el.value = fmtTin(keep); // restore and reformat; never clear
+      if (applied) el.value = '';
+      else el.value = fmtTin(el.value);
     });
   }
   function validSsn(d) {
@@ -554,7 +554,7 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
     if (c === 'llc' && val('llc_class')) cls += ' (' + val('llc_class') + ')';
     if (c === 'other' && val('other_class')) cls += ': ' + val('other_class');
     var d = digits(val('tin')), t = checked('tin_type');
-    var tin = d.length === 9 ? (t === 'ein' ? 'EIN' : 'SSN') + ' ending ' + d.slice(5) : ($('applied').checked ? 'Applied For' : '');
+    var tin = $('applied').checked ? 'Applied For' : d.length === 9 ? (t === 'ein' ? 'EIN' : 'SSN') + ' ending ' + d.slice(5) : '';
     var rows = [
       ['Line 1 name', val('name')], ['Line 2 business name', val('business_name')], ['Line 3a classification', cls],
       ['Line 3b foreign partners', $('line3b').hidden ? '' : (f.elements.foreign_partners.checked ? 'Yes' : 'No')],
@@ -627,7 +627,7 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
     }
     $('errors').hidden = true;
     // Send the TIN as digits only; the confirmation copy never leaves the browser
-    f.elements.tin.value = digits(val('tin'));  // keep TIN even if Applied For is checked
+    f.elements.tin.value = $('applied').checked ? '' : digits(val('tin'));
     $('tin2').disabled = true;
     $('submit').disabled = true; $('submit').textContent = 'Submitting…';
   });

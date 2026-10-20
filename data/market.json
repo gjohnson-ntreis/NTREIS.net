@@ -3,13 +3,13 @@
     "label":  "September 2026 Snapshot",
     "vsLabel":  "September 2025",
     "scope":  "Residential listings across NTREIS",
-    "asOf":  "2026-10-20T11:15:08Z",
+    "asOf":  "2026-10-16T11:15:05Z",
     "current":  {
                     "activeListings":  50131,
                     "medianPrice":  355000,
                     "daysOnMarket":  65,
-                    "closedSales":  9170,
-                    "newListings":  14962,
+                    "closedSales":  9157,
+                    "newListings":  14959,
                     "monthsSupply":  6.1
                 },
     "priorYear":  {
@@ -23,7 +23,7 @@
     "change":  {
                    "medianPricePct":  -1.4,
                    "daysOnMarketPct":  -3,
-                   "closedSalesPct":  -7.9,
+                   "closedSalesPct":  -8,
                    "newListingsPct":  -2.5
                },
     "trailing12":  [
@@ -107,10 +107,10 @@
                        {
                            "month":  "2026-09",
                            "activeListings":  50131,
-                           "closedSales":  9170,
-                           "newListings":  14962,
+                           "closedSales":  9157,
+                           "newListings":  14959,
                            "medianPrice":  355000
                        }
                    ],
-    "publishedAt":  "2026-10-20T11:15:38Z"
+    "publishedAt":  "2026-10-16T11:15:34Z"
 }
