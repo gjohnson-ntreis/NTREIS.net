@@ -26,7 +26,8 @@
       ["Market Stats", "/html/market_stats.html"],
       ["Support", "/html/support.html"],
       ["Data Access", "/html/data_access.html"],
-      ["Data Quality", "/html/data_quality.html"]
+      ["Data Quality", "/html/data_quality.html"],
+      ["Closure Calendar", "/html/support.html#closures"]
     ]},
     { title: "Organization", links: [
       ["About NTREIS", "/html/about.html"],
