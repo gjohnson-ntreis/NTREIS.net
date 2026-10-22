@@ -31,6 +31,7 @@ select:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid 
 .bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--line)}
 button{font-family:var(--display);font-weight:600;font-size:15px;border:0;border-radius:8px;padding:12px 20px;cursor:pointer;background:var(--accent);color:#FFFFFF}
 button:hover{filter:brightness(1.05)}
+button.secondary{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 2px var(--blue)}
 .status{font-size:14px;color:var(--ok);min-height:1.4em}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .steps section{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
@@ -63,33 +64,36 @@ button:hover{filter:brightness(1.05)}
     <div class="paper"><div id="sig"></div></div>
     <div class="bar">
       <button id="copy" type="button">Copy signature</button>
+      <button id="dl" type="button" class="secondary">Download for classic Outlook (Windows)</button>
       <span class="status" id="status" role="status"></span>
     </div>
   </div>
 
   <div class="steps">
     <section>
-      <h2>Outlook on Mac</h2>
+      <h2>Mac, new Outlook, or Outlook on the web</h2>
       <ol>
         <li>Click <b>Copy signature</b> above.</li>
-        <li>In Outlook, open <b>Settings</b>, then <b>Signatures</b>.</li>
-        <li>Open your signature, press <b>Cmd+A</b>, then <b>Delete</b>.</li>
-        <li>Press <b>Cmd+V</b> and <b>Save</b>.</li>
+        <li>In Outlook, open <b>Settings</b>, then <b>Signatures</b> (on Mac: <b>Outlook</b> menu, <b>Settings</b>, <b>Signatures</b>).</li>
+        <li>Open your signature, select everything in it, and delete it.</li>
+        <li>Paste with <b>Cmd+V</b> (Mac) or <b>Ctrl+V</b> (Windows), then <b>Save</b>.</li>
       </ol>
     </section>
     <section>
-      <h2>Outlook on Windows</h2>
+      <h2>Classic Outlook on Windows</h2>
       <ol>
-        <li>Click <b>Copy signature</b> above.</li>
-        <li>In Outlook, go to <b>File</b>, <b>Options</b>, <b>Mail</b>, then <b>Signatures</b>.</li>
-        <li>Select your signature, press <b>Ctrl+A</b>, then <b>Delete</b>.</li>
-        <li>Press <b>Ctrl+V</b> and click <b>OK</b>.</li>
+        <li>Click <b>Download for classic Outlook</b> and close Outlook.</li>
+        <li>Press <b>Windows key + R</b>, type <b>%APPDATA%\Microsoft\Signatures</b>, and press <b>Enter</b>.</li>
+        <li>Open the downloaded zip and drag everything inside it into that folder.</li>
+        <li>Open Outlook, go to <b>File</b>, <b>Options</b>, <b>Mail</b>, <b>Signatures</b>, pick <b>NTREIS</b>, and set it as your default.</li>
       </ol>
+      <p style="margin:10px 0 0;font-size:13px;color:var(--muted);">Not sure which Outlook you have? Classic Outlook has a <b>File</b> tab in the top-left corner. New Outlook does not.</p>
     </section>
   </div>
   <p class="note">Send yourself a test email after you paste. Something wrong, or your details changed? Email Sheree Tomba at sheree@ntreis.net and the page will be updated.</p>
 </div>
 
+<script src="/js/jszip.min.js"></script>
 <script>
 /* Staff and shared-inbox data live in /data/signatures.json.
    The admin site's Signatures tab edits that file. */
@@ -97,8 +101,12 @@ let PEOPLE=[], SHARED=[];
 
 /* Images load from /html/sig-images/, as full web addresses,
    so they show up in every inbox after people paste their signature. */
-const IMG=f=>new URL("/html/sig-images/"+f, location.href).href;
-const A={logo:IMG("ntreis-logo.png"),logoH:53,li:IMG("icon-linkedin.png"),fb:IMG("icon-facebook.png"),x:IMG("icon-x.png")};
+const LOCAL_BASE="/html/sig-images/";   /* preview and downloads use the copies on this server */
+let IMG_BASE=LOCAL_BASE;                 /* copied signatures use the permanent address from signatures.json */
+let CUR=LOCAL_BASE;
+const IMG=f=>new URL(CUR+f, location.href).href;
+let A={};
+function setImages(){A={logo:IMG("ntreis-logo.png"),logoH:53,li:IMG("icon-linkedin.png"),fb:IMG("icon-facebook.png"),x:IMG("icon-x.png")};}
 const N="#000744", O="#F47729", F="font-family:Montserrat,Arial,Helvetica,sans-serif;";
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const link=(href,t)=>`<a href="${href}" style="color:${O};font-weight:bold;text-decoration:underline;">${esc(t)}</a>`;
@@ -142,21 +150,49 @@ function render(){
 sel.addEventListener("change",()=>{try{localStorage.setItem("ntreis-sig-who",sel.value)}catch(e){};render()});
 first.addEventListener("input",render);
 fetch("/data/signatures.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
+  if(d.imageBase)IMG_BASE=d.imageBase; setImages();
   PEOPLE=d.staff; SHARED=d.shared; buildOptions();
   try{const saved=localStorage.getItem("ntreis-sig-who");if(saved&&[...sel.options].some(o=>o.value===saved))sel.value=saved}catch(e){}
   render();
 }).catch(()=>{sig.textContent="Signatures could not load. Refresh the page, or contact sheree@ntreis.net.";});
+
+/* Classic Outlook for Windows: build NTREIS.htm + NTREIS_files/ images + NTREIS.txt in a zip. */
+document.getElementById("dl").addEventListener("click",async()=>{
+  status.textContent="Building your file...";
+  try{
+    const NAME="NTREIS", DIR=NAME+"_files";
+    let html=sig.innerHTML;
+    const base=new URL(LOCAL_BASE,location.href).href;
+    const files=[...new Set([...html.matchAll(/src="([^"]+)"/g)].map(m=>m[1]).filter(u=>u.startsWith(base)).map(u=>u.slice(base.length)))];
+    const zip=new JSZip(), folder=zip.folder(DIR);
+    for(const f of files){
+      const r=await fetch("/html/sig-images/"+f); if(!r.ok) throw new Error(f);
+      folder.file(f, await r.blob());
+      html=html.split(base+f).join(DIR+"/"+f);
+    }
+    zip.file(NAME+".htm",`<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>${html}</body></html>`);
+    zip.file(NAME+".txt",sig.innerText.replace(/\n{3,}/g,"\n\n"));
+    const blob=await zip.generateAsync({type:"blob"});
+    const who=(sel.options[sel.selectedIndex]?.text||"signature").replace(/[^A-Za-z0-9]+/g,"-").replace(/^-|-$/g,"");
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`NTREIS-Signature-${who}.zip`;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    status.textContent="Downloaded. Follow the Classic Outlook steps below.";
+  }catch(e){ status.textContent="The download didn't work. Refresh the page and try again, or email sheree@ntreis.net."; }
+});
 function selectSig(){const r=document.createRange();r.selectNodeContents(sig);const s=getSelection();s.removeAllRanges();s.addRange(r)}
+function useBase(b){CUR=b;setImages();render();}
 document.getElementById("copy").addEventListener("click",async()=>{
+  useBase(IMG_BASE);
   const html=sig.innerHTML, text=sig.innerText;
+  const done=msg=>{useBase(LOCAL_BASE);status.textContent=msg;};
   try{
     await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([text],{type:"text/plain"})})]);
-    status.textContent="Copied. Now paste it into Outlook.";return;
+    done("Copied. Now paste it into Outlook.");return;
   }catch(e){}
   selectSig();
   let ok=false;try{ok=document.execCommand("copy")}catch(e){}
-  if(ok){getSelection().removeAllRanges();status.textContent="Copied. Now paste it into Outlook."}
-  else status.textContent="Your signature is selected. Press Cmd+C (Mac) or Ctrl+C (Windows) to copy it.";
+  if(ok){getSelection().removeAllRanges();done("Copied. Now paste it into Outlook.")}
+  else status.textContent="Your signature is selected. Press Cmd+C (Mac) or Ctrl+C (Windows) to copy it. Pick your name again when you're done.";
 });
 </script>
 
