@@ -1,4 +1,6 @@
 {
+  "imageBase": "https://ntreis.net/html/sig-images/",
+  "_imageBaseNote": "Permanent HTTPS address where the signature images live. Signatures copied from this page point here, so do not change it after staff install their signatures.",
   "staff": [
     {
       "id": "chris",
@@ -129,6 +131,17 @@
       ],
       "e": "customercare@ntreis.net",
       "edit": true
+    },
+    {
+      "id": "support",
+      "label": "support@ (replies)",
+      "n": "[Your first name]",
+      "lines": [
+        "NTREIS Customer Care"
+      ],
+      "e": "customercare@ntreis.net",
+      "edit": true,
+      "note": "Our support address is now customercare@ntreis.net. Please use it for future requests."
     },
     {
       "id": "dq",
