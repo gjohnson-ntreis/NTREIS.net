@@ -33,11 +33,18 @@ button{font-family:var(--display);font-weight:600;font-size:15px;border:0;border
 button:hover{filter:brightness(1.05)}
 button.secondary{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 2px var(--blue)}
 .status{font-size:14px;color:var(--ok);min-height:1.4em}
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.steps{display:grid;grid-template-columns:1fr;gap:16px}
 .steps section{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
 .steps h2{font-family:var(--display);font-size:17px;margin:0 0 8px}
 .steps ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--muted)}
 .steps b{color:var(--fg)}
+.which{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.which h2,.alt summary{font-family:var(--display);font-size:17px;margin:0 0 8px}
+.which ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;color:var(--muted)}
+.which b,.alt b{color:var(--fg)}
+.alt{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 20px;color:var(--muted)}
+.alt summary{cursor:pointer;margin:0;color:var(--fg)}
+.alt ol{margin:12px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .note{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
 @media (prefers-reduced-motion:no-preference){button{transition:filter .15s}}
 </style>
@@ -48,7 +55,7 @@ button.secondary{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 2
   <header>
     <span class="eyebrow">Marketing &amp; Communications</span>
     <h1>NTREIS Email Signatures</h1>
-    <p class="lede">Pick your name, copy your signature, and paste it into Outlook. Every signature uses the same approved layout, so please don't edit the fonts or colors after you paste.</p>
+    <p class="lede">Pick your name, copy your signature, and follow the steps for your version of Outlook below. Every signature uses the same approved layout, so please don't edit the fonts or colors after you paste.</p>
   </header>
 
   <div class="picker">
@@ -64,32 +71,70 @@ button.secondary{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 2
     <div class="paper"><div id="sig"></div></div>
     <div class="bar">
       <button id="copy" type="button">Copy signature</button>
-      <button id="dl" type="button" class="secondary">Download for classic Outlook (Windows)</button>
+      <button id="dl" type="button" class="secondary">Download for classic Outlook</button>
       <span class="status" id="status" role="status"></span>
     </div>
   </div>
 
+  <section class="which">
+    <h2>Which Outlook do you have?</h2>
+    <ul>
+      <li><b>Mac:</b> you're on a MacBook or iMac.</li>
+      <li><b>Classic Outlook (Windows):</b> there's a <b>File</b> tab in the top-left corner of Outlook.</li>
+      <li><b>New Outlook (Windows) or Outlook on the web:</b> there's no File tab, and a gear icon sits in the top-right corner.</li>
+    </ul>
+  </section>
+
   <div class="steps">
     <section>
-      <h2>Mac, new Outlook, or Outlook on the web</h2>
+      <h2>Mac</h2>
       <ol>
-        <li>Click <b>Copy signature</b> above.</li>
-        <li>In Outlook, open <b>Settings</b>, then <b>Signatures</b> (on Mac: <b>Outlook</b> menu, <b>Settings</b>, <b>Signatures</b>).</li>
-        <li>Open your signature, select everything in it, and delete it.</li>
-        <li>Paste with <b>Cmd+V</b> (Mac) or <b>Ctrl+V</b> (Windows), then <b>Save</b>.</li>
+        <li>Pick your name above and click <b>Copy signature</b>.</li>
+        <li>Open Outlook. In the menu bar at the very top of your screen, click <b>Outlook</b>, then <b>Settings</b>.</li>
+        <li>Click <b>Signatures</b>.</li>
+        <li>Click the <b>+</b> button under the list to make a new signature. Name it <b>NTREIS</b>.</li>
+        <li>Click inside the big empty box and press <b>Cmd+V</b>. Your signature appears with the logo and icons.</li>
+        <li>Under <b>Choose default signature</b>, set <b>New messages</b> and <b>Replies/forwards</b> to <b>NTREIS</b>.</li>
+        <li>Click <b>Save</b>, or close the window.</li>
       </ol>
     </section>
     <section>
-      <h2>Classic Outlook on Windows</h2>
+      <h2>Classic Outlook (Windows)</h2>
       <ol>
-        <li>Click <b>Download for classic Outlook</b> and close Outlook.</li>
-        <li>Press <b>Windows key + R</b>, type <b>%APPDATA%\Microsoft\Signatures</b>, and press <b>Enter</b>.</li>
-        <li>Open the downloaded zip and drag everything inside it into that folder.</li>
-        <li>Open Outlook, go to <b>File</b>, <b>Options</b>, <b>Mail</b>, <b>Signatures</b>, pick <b>NTREIS</b>, and set it as your default.</li>
+        <li>Pick your name above and click <b>Copy signature</b>.</li>
+        <li>In Outlook, click <b>File</b> in the top-left corner, then <b>Options</b> at the bottom of the left column.</li>
+        <li>Click <b>Mail</b> in the left column, then the <b>Signatures...</b> button on the right.</li>
+        <li>Click <b>New</b>, type <b>NTREIS</b>, and click <b>OK</b>.</li>
+        <li>Click inside the big box at the bottom and press <b>Ctrl+V</b>.</li>
+        <li><b>Look on the right side of the window.</b> Set <b>New messages</b> to <b>NTREIS</b> and <b>Replies/forwards</b> to <b>NTREIS</b>.</li>
+        <li>Click <b>OK</b>, then <b>OK</b> again.</li>
       </ol>
-      <p style="margin:10px 0 0;font-size:13px;color:var(--muted);">Not sure which Outlook you have? Classic Outlook has a <b>File</b> tab in the top-left corner. New Outlook does not.</p>
+    </section>
+    <section>
+      <h2>New Outlook (Windows) or Outlook on the web</h2>
+      <ol>
+        <li>Pick your name above and click <b>Copy signature</b>.</li>
+        <li>In Outlook, click the <b>gear icon</b> in the top-right corner.</li>
+        <li>Click <b>Account</b>, then <b>Signatures</b>.</li>
+        <li>Click <b>+ New signature</b> and name it <b>NTREIS</b>.</li>
+        <li>Click inside the big box and press <b>Ctrl+V</b>.</li>
+        <li>Click <b>Save</b>.</li>
+        <li>Below that, under <b>Select default signatures</b>, set both <b>For new messages</b> and <b>For replies/forwards</b> to <b>NTREIS</b>, then click <b>Save</b>.</li>
+      </ol>
     </section>
   </div>
+
+  <details class="alt">
+    <summary>Paste not working in classic Outlook? Use the download instead</summary>
+    <ol>
+      <li>Pick your name above and click <b>Download for classic Outlook</b>. Close Outlook.</li>
+      <li>Open <b>File Explorer</b> (the yellow folder icon on your taskbar).</li>
+      <li>Click the address bar at the top, type <b>%APPDATA%\Microsoft\Signatures</b>, and press <b>Enter</b>. This is the folder where Outlook keeps signatures.</li>
+      <li>Open your <b>Downloads</b> folder in a second window and double-click the zip that starts with <b>NTREIS-Signature</b>.</li>
+      <li>Select everything inside the zip (<b>Ctrl+A</b>) and drag it into the Signatures folder.</li>
+      <li>Open Outlook and do steps 2, 3, 6 and 7 of the classic steps above, picking <b>NTREIS</b> on the right side.</li>
+    </ol>
+  </details>
   <p class="note">Send yourself a test email after you paste. Something wrong, or your details changed? Email Sheree Tomba at sheree@ntreis.net and the page will be updated.</p>
 </div>
 
@@ -104,7 +149,15 @@ let PEOPLE=[], SHARED=[];
 const LOCAL_BASE="/html/sig-images/";   /* preview and downloads use the copies on this server */
 let IMG_BASE=LOCAL_BASE;                 /* copied signatures use the permanent address from signatures.json */
 let CUR=LOCAL_BASE;
-const IMG=f=>new URL(CUR+f, location.href).href;
+const DATA={};                           /* images packed into the copied signature */
+const IMG=f=>(CUR==="embed"&&DATA[f])?DATA[f]:new URL((CUR==="embed"?LOCAL_BASE:CUR)+f, location.href).href;
+async function packImages(names){
+  await Promise.all(names.map(async f=>{
+    if(DATA[f])return;
+    const b=await (await fetch(LOCAL_BASE+f)).blob();
+    DATA[f]=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(b)});
+  }));
+}
 let A={};
 function setImages(){A={logo:IMG("ntreis-logo.png"),logoH:53,li:IMG("icon-linkedin.png"),fb:IMG("icon-facebook.png"),x:IMG("icon-x.png")};}
 const N="#000744", O="#F47729", F="font-family:Montserrat,Arial,Helvetica,sans-serif;";
@@ -113,7 +166,7 @@ const link=(href,t)=>`<a href="${href}" style="color:${O};font-weight:bold;text-
 const zw=s=>esc(s).replace(/ /g,"&zwnj; ");
 const ADDR=`<span style="color:${N};text-decoration:none;">${zw("8101 Windrose Avenue, Suite 1660, Plano, Texas 75024")}</span>`;
 function footer(){
-  const ic=[["li","https://www.linkedin.com/company/ntreis","LinkedIn"],["fb","https://www.facebook.com/NTREIS","Facebook"],["x","https://x.com/NTREIS","X"]]
+  const ic=[["li","https://www.linkedin.com/company/ntreis-inc/","LinkedIn"],["fb","https://facebook.com/ntreis","Facebook"],["x","https://x.com/ntreis","X"]]
     .map(([k,u,a])=>`<td style="padding-right:6px;"><a href="${u}"><img src="${A[k]}" width="22" height="22" alt="${a}" style="display:block;border:0;"></a></td>`).join("");
   return `<tr><td style="padding:14px 0;"><div style="border-top:1px solid ${O};width:330px;font-size:0;line-height:0;">&nbsp;</div></td></tr>
 <tr><td><table cellpadding="0" cellspacing="0" border="0"><tr><td valign="middle" style="padding-right:16px;"><img src="${A.logo}" width="162" height="${A.logoH}" alt="NTREIS: Where real estate connects" style="display:block;width:162px;height:${A.logoH}px;border:0;margin-left:-11px;"></td><td valign="middle" style="border-left:1px solid #cccccc;padding-left:16px;"><table cellpadding="0" cellspacing="0" border="0"><tr>${ic}</tr></table></td></tr></table></td></tr>`;
@@ -150,7 +203,8 @@ function render(){
 sel.addEventListener("change",()=>{try{localStorage.setItem("ntreis-sig-who",sel.value)}catch(e){};render()});
 first.addEventListener("input",render);
 fetch("/data/signatures.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
-  if(d.imageBase)IMG_BASE=d.imageBase; setImages();
+  IMG_BASE="embed"; setImages();
+  packImages(["ntreis-logo.png","icon-linkedin.png","icon-facebook.png","icon-x.png",...d.staff.filter(x=>x.script).map(x=>x.script)]).catch(()=>{});
   PEOPLE=d.staff; SHARED=d.shared; buildOptions();
   try{const saved=localStorage.getItem("ntreis-sig-who");if(saved&&[...sel.options].some(o=>o.value===saved))sel.value=saved}catch(e){}
   render();
@@ -176,7 +230,7 @@ document.getElementById("dl").addEventListener("click",async()=>{
     const who=(sel.options[sel.selectedIndex]?.text||"signature").replace(/[^A-Za-z0-9]+/g,"-").replace(/^-|-$/g,"");
     const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`NTREIS-Signature-${who}.zip`;
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
-    status.textContent="Downloaded. Follow the Classic Outlook steps below.";
+    status.textContent="Downloaded. Follow the download steps at the bottom of this page.";
   }catch(e){ status.textContent="The download didn't work. Refresh the page and try again, or email sheree@ntreis.net."; }
 });
 function selectSig(){const r=document.createRange();r.selectNodeContents(sig);const s=getSelection();s.removeAllRanges();s.addRange(r)}
