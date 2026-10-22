@@ -1,0 +1,155 @@
+{
+  "staff": [
+    {
+      "id": "chris",
+      "n": "Chris Carrillo",
+      "c": "CMLX3",
+      "t": "Chief Executive Officer",
+      "p": "214.800.8422",
+      "e": "chris@ntreis.net"
+    },
+    {
+      "id": "rene",
+      "n": "René Galicia",
+      "c": "Esq., CMLX3, RCE",
+      "t": "EVP & Chief Legal Counsel",
+      "p": "",
+      "e": "rene@ntreis.net"
+    },
+    {
+      "id": "robert",
+      "n": "John Robert Pharr",
+      "c": "",
+      "t": "Chief Financial Officer",
+      "p": "214.800.8430",
+      "script": "script-robert.png",
+      "sw": 82,
+      "e": "robert@ntreis.net"
+    },
+    {
+      "id": "david",
+      "n": "David Blake",
+      "c": "CMLX2",
+      "t": "Senior VP Technology",
+      "p": "214.800.8435",
+      "e": "dblake@ntreis.net"
+    },
+    {
+      "id": "mike",
+      "n": "Mike Murphy",
+      "c": "",
+      "t": "SVP, Integrated Solutions",
+      "p": "214.800.8424",
+      "e": "mike@ntreis.net"
+    },
+    {
+      "id": "joey",
+      "n": "Joey Bandemer",
+      "c": "RCE",
+      "t": "VP Data Governance & Customer Experience",
+      "p": "",
+      "e": "joey@ntreis.net"
+    },
+    {
+      "id": "sheree",
+      "n": "Sheree Tomba",
+      "c": "",
+      "t": "Director of Marketing & Communications",
+      "p": "214.800.8441",
+      "e": "sheree@ntreis.net"
+    },
+    {
+      "id": "gordon",
+      "n": "Gordon Johnson",
+      "c": "",
+      "t": "Director of Special Projects",
+      "p": "214.800.8431",
+      "cell": "512.921.8205",
+      "e": "gordonjohnson@ntreis.net"
+    },
+    {
+      "id": "nadia",
+      "n": "Nadia Long",
+      "c": "",
+      "t": "Data Export Administrator",
+      "p": "214.800.8420",
+      "e": "nadia@ntreis.net"
+    },
+    {
+      "id": "carrie",
+      "n": "Carrie Applegate",
+      "c": "",
+      "t": "Customer Care Administrator",
+      "p": "214.800.8423",
+      "e": "carrie@ntreis.net"
+    },
+    {
+      "id": "cindy",
+      "n": "Cindy Cocklin",
+      "c": "",
+      "t": "Customer Care Administrator",
+      "p": "214.800.8443",
+      "e": "cindy@ntreis.net"
+    },
+    {
+      "id": "angela",
+      "n": "Angela Duran",
+      "c": "",
+      "t": "Executive Assistant",
+      "p": "214.800.8434",
+      "e": "angeladuran@ntreis.net"
+    }
+  ],
+  "shared": [
+    {
+      "id": "comms",
+      "label": "communications@ and training@",
+      "n": "The NTREIS Team",
+      "lines": [
+        "Questions? Contact NTREIS Customer Care"
+      ],
+      "e": "customercare@ntreis.net"
+    },
+    {
+      "id": "alerts",
+      "label": "alerts@",
+      "n": "The NTREIS Team",
+      "lines": [
+        "Status updates will follow from this address."
+      ],
+      "pre": "Questions? ",
+      "e": "customercare@ntreis.net"
+    },
+    {
+      "id": "care",
+      "label": "Customer Care replies",
+      "n": "[Your first name]",
+      "lines": [
+        "NTREIS Customer Care"
+      ],
+      "e": "customercare@ntreis.net",
+      "edit": true
+    },
+    {
+      "id": "dq",
+      "label": "dataquality@",
+      "n": "NTREIS Data Services Team",
+      "lines": [],
+      "e": "dataquality@ntreis.net"
+    },
+    {
+      "id": "da",
+      "label": "dataservices@",
+      "n": "NTREIS Data Services Team",
+      "lines": [],
+      "e": "dataservices@ntreis.net"
+    },
+    {
+      "id": "vip",
+      "label": "vip@ (NTREIS Rewards)",
+      "n": "The NTREIS Rewards Team",
+      "lines": [],
+      "e": "vip@ntreis.net"
+    }
+  ]
+}
