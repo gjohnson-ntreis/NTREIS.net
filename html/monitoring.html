@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site Monitoring — NTREIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:#f7f7fb;color:#1a1a2e;line-height:1.6}
+.nt-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(0,7,68,0.96);backdrop-filter:blur(8px);height:56px;display:flex;align-items:center;padding:0 48px;gap:32px}
+.nt-nav img{height:28px;filter:brightness(0) invert(1)}
+.nav-links{display:flex;gap:24px;margin-left:auto}
+.nav-link{color:rgba(255,255,255,0.8);text-decoration:none;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase}
+.nav-link.act{color:#fff;border-bottom:2px solid #F47729}
+.nav-cta{background:#F47729;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.wrap{max-width:min(1200px,90vw);margin:0 auto;padding:0 48px}
+.eyebrow{display:inline-block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#F47729;margin-bottom:8px}
+h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(2.2rem,5vw,3.5rem);line-height:1.1;color:#fff}
+.body-txt{font-size:16px;color:#3a3a4a}
+.admin-card{background:#fff;border-radius:12px;padding:32px;box-shadow:0 4px 24px rgba(0,7,68,0.06);margin-bottom:24px}
+.btn-admin{background:#F47729;color:#fff;border:none;padding:12px 24px;border-radius:6px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block}
+.log-output{background:#0d0d1a;color:#a0e0a0;font-family:monospace;font-size:13px;padding:16px;border-radius:8px;white-space:pre-wrap;max-height:320px;overflow:auto}
+.vendor-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,7,68,0.08)}
+.vendor-row:last-child{border-bottom:none}
+.status-dot{width:12px;height:12px;border-radius:50%;background:#ccc;display:inline-block;margin-right:10px}
+.status-up{background:#22c55e}
+.status-down{background:#ef4444}
+.status-unknown{background:#94a3b8}
+#gate{position:fixed;inset:0;z-index:2000;background:rgba(0,7,68,0.96);display:flex;align-items:center;justify-content:center;padding:24px}
+.gate-box{background:#fff;border-radius:12px;padding:40px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.gate-box h2{color:#000744;margin-bottom:8px;font-size:1.75rem}
+.gate-box p{color:#5A5A72;margin-bottom:24px;font-size:14px}
+#mainContent{display:none}
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="gate-box">
+    <span class="eyebrow">Restricted</span>
+    <h2>Admin Access</h2>
+    <p>Verifying staff credentials…</p>
+    <div id="gateError"></div>
+  </div>
+</div>
+
+<div id="mainContent" style="padding-top:56px;">
+<nav class="nt-nav">
+  <a href="/"><img src="/assets/logo.png" alt="NTREIS"></a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/html/admin.html" class="nav-link">Admin</a>
+    <a href="/html/monitoring.html" class="nav-link act">Monitoring</a>
+  </div>
+  <a href="https://ntreis.clareityiam.net/idp/login" class="nav-cta">MLS Login</a>
+</nav>
+
+<section style="background:#000744;padding:32px 0 24px;">
+  <div class="wrap">
+    <span class="eyebrow">Internal</span>
+    <h1>Site Monitoring</h1>
+    <p style="color:rgba(255,255,255,0.7);margin-top:12px;max-width:560px;">Light status checks for NTREIS vendor sites and internal third-party services.</p>
+  </div>
+</section>
+
+<section style="padding:32px 0;">
+  <div class="wrap">
+    <div class="admin-card">
+      <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;margin-bottom:8px;">Vendor Status</h3>
+      <p class="body-txt" style="margin-bottom:20px;">Checks will run against public endpoints. Results appear below once configured.</p>
+
+      <div id="vendorList">
+        <div class="vendor-row">
+          <div><span class="status-dot status-unknown"></span> <strong>Example Vendor</strong> — https://example.com</div>
+          <span style="color:#5A5A72;font-size:13px;">Not configured</span>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;">
+        <button id="checkBtn" class="btn-admin">Run Checks</button>
+      </div>
+      <div class="log-output" id="log" style="margin-top:16px;">Ready. Add vendor URLs and implement checks.</div>
+    </div>
+
+    <div class="admin-card">
+      <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;margin-bottom:12px;">Add Vendor</h3>
+      <p class="body-txt" style="margin-bottom:16px;">Placeholder — list of vendors and endpoints will be stored and checked from the server.</p>
+      <p style="color:#5A5A72;font-size:14px;">Next step: define the list of public vendor URLs and internal services to monitor.</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+const gate = document.getElementById('gate');
+const mainContent = document.getElementById('mainContent');
+
+async function checkAccess() {
+  try {
+    const res = await fetch('/members/api/me', { credentials: 'same-origin' });
+    if (!res.ok) {
+      window.location.href = '/auth/login?returnTo=' + encodeURIComponent('/html/monitoring.html');
+      return;
+    }
+    const me = await res.json();
+    const emailStaff = me.email && me.email.toLowerCase().endsWith('@ntreis.net');
+    const hasMA = me.securityClass === 'MA';
+    const hasActive = !me.status || String(me.status).toLowerCase() === 'active';
+    const allowed = (hasMA && hasActive) || (!me.securityClass && emailStaff);
+    if (!allowed) {
+      gate.innerHTML = '<div class="gate-box"><span class="eyebrow">Restricted</span><h2>Access denied</h2><p>This area is limited to active NTREIS staff with security class MA.</p><a href="/" class="btn-admin">Return home</a></div>';
+      return;
+    }
+    gate.style.display = 'none';
+    mainContent.style.display = 'block';
+  } catch (e) {
+    window.location.href = '/auth/login?returnTo=' + encodeURIComponent('/html/monitoring.html');
+  }
+}
+checkAccess();
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  document.getElementById('log').textContent = 'Checks not yet implemented.\nAdd vendor list and server-side status endpoint next.';
+});
+</script>
+</body>
+</html>

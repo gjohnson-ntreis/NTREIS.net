@@ -128,9 +128,9 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
 
 <div id="mainContent" style="padding-top:56px;">
 <nav class="nt-nav">
-  <a href="../index.html"><img src="data:image/png;base64,REPLACE_WITH_INDEX_BASE64" alt="NTREIS" style="height:28px;width:auto;filter:brightness(0) invert(1);"></a>
+  <a href="/"><img src="/assets/logo.png" alt="NTREIS" style="height:28px;width:auto;filter:brightness(0) invert(1);"></a>
   <div class="nav-links">
-    <a href="../index.html" class="nav-link">Home</a>
+    <a href="/" class="nav-link">Home</a>
     <a href="about.html" class="nav-link">About</a>
     <a href="admin.html" class="nav-link act">Admin</a>
   </div>
@@ -138,7 +138,7 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
 </nav>
 
 <!-- PAGE HERO -->
-<section style="background:#000744;padding:80px 0 48px;">
+<section style="background:#000744;padding:32px 0 24px;">
   <div class="wrap">
     <span class="eyebrow eyebrow-o">Internal</span>
     <h1 style="color:#ffffff;max-width:16ch;">Administration</h1>
@@ -146,35 +146,42 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
   </div>
 </section>
 
-<section class="sec">
+<section class="sec" style="padding-top:24px;padding-bottom:0;">
   <div class="wrap">
 
-    <div class="admin-card">
-      <h3>Code Deployment <span id="status" class="status-badge status-idle">Idle</span></h3>
-      <p class="body-sm" style="margin-bottom:24px;">Push the latest static site changes from the server working directory to the GitHub repository. Requires a configured backend endpoint with repository credentials.</p>
+    <!-- TABS -->
+    <div style="display:flex;gap:8px;margin-bottom:24px;border-bottom:1px solid rgba(0,7,68,0.1);padding-bottom:8px;">
+      <button id="tabSignatures" class="tab-btn active" style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:10px 20px;border:none;background:transparent;color:#000744;border-bottom:3px solid #F47729;cursor:pointer;">Signatures</button>
+      <button id="tabSync" class="tab-btn" style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:10px 20px;border:none;background:transparent;color:#5A5A72;border-bottom:3px solid transparent;cursor:pointer;">Code Sync</button>
+      <button id="tabMonitor" class="tab-btn" style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:10px 20px;border:none;background:transparent;color:#5A5A72;border-bottom:3px solid transparent;cursor:pointer;">Site Monitoring</button>
+    </div>
 
-      <div class="form-group">
-        <label for="commitMsg">Commit message</label>
-        <input type="text" id="commitMsg" placeholder="Update site content" value="Update ntreis.net static site">
+    <!-- SIGNATURES TAB -->
+    <div id="panelSignatures" class="tab-panel">
+      <div class="admin-card" style="padding:0;overflow:hidden;border:none;box-shadow:none;background:transparent;">
+        <iframe src="/html/signatures.html" style="width:100vw;margin-left:calc(-50vw + 50%);height:calc(100vh - 80px);min-height:800px;border:none;display:block;" title="Email Signatures"></iframe>
       </div>
+    </div>
 
-      <button id="pushBtn" class="btn-admin">Push to GitHub</button>
-      <button id="pullBtn" class="btn-admin" style="margin-left:12px;background:#1B2581;">Pull from GitHub</button>
+    <!-- CODE SYNC TAB -->
+    <div id="panelSync" class="tab-panel" style="display:none;">
+      <div class="admin-card">
+        <h3>Code Deployment <span id="status" class="status-badge status-idle">Idle</span></h3>
+        <p class="body-sm" style="margin-bottom:24px;">Push the latest static site changes from the server working directory to the GitHub repository. Requires a configured backend endpoint with repository credentials.</p>
 
-      <div class="log-output" id="log">Ready. Use Push to send local changes or Pull to bring in newer files from the repository.
+        <div class="form-group">
+          <label for="commitMsg">Commit message</label>
+          <input type="text" id="commitMsg" placeholder="Update site content" value="Update ntreis.net static site">
+        </div>
+
+        <button id="pushBtn" class="btn-admin">Push to GitHub</button>
+        <button id="pullBtn" class="btn-admin" style="margin-left:12px;background:#1B2581;">Pull from GitHub</button>
+
+        <div class="log-output" id="log">Ready. Use Push to send local changes or Pull to bring in newer files from the repository.
 
 Restricted to: html/, data/, js/, and index.html under C:\apps\ntreis.
 GitHub credentials from C:\apps\members-gateway\.env (GITHUB_PAT). Repository: NTREIS.net.</div>
-    </div>
-
-    <div class="admin-card">
-      <h3>Next Steps</h3>
-      <p class="body-txt">This page provides the starting administrative surface. Additional capabilities (SSO-protected access, database tools, sync jobs, etc.) can be added following the pattern used in Jarvis.</p>
-      <ul class="body-sm" style="margin-top:12px;padding-left:20px;color:#5A5A72;">
-        <li>Access is restricted to active NTREIS staff with security class MA (same process as the broker awards / rewards pages).</li>
-        <li>Repository status, last commit, and branch information can be added next.</li>
-        <li>Expand with other administrative functions as needed.</li>
-      </ul>
+      </div>
     </div>
 
   </div>
@@ -218,6 +225,31 @@ async function checkAccess() {
 }
 
 checkAccess();
+
+// Tabs
+function activateTab(activeBtn, activePanel) {
+  ['tabSignatures','tabSync'].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.style.color = '#5A5A72';
+    btn.style.borderBottomColor = 'transparent';
+  });
+  ['panelSignatures','panelSync'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  activeBtn.style.color = '#000744';
+  activeBtn.style.borderBottomColor = '#F47729';
+  activePanel.style.display = 'block';
+}
+
+document.getElementById('tabSignatures').addEventListener('click', () => {
+  activateTab(document.getElementById('tabSignatures'), document.getElementById('panelSignatures'));
+});
+document.getElementById('tabSync').addEventListener('click', () => {
+  activateTab(document.getElementById('tabSync'), document.getElementById('panelSync'));
+});
+document.getElementById('tabMonitor').addEventListener('click', () => {
+  window.location.href = '/html/monitoring.html';
+});
 
 // Existing deploy logic
 const pushBtn = document.getElementById('pushBtn');
