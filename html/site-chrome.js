@@ -45,7 +45,13 @@
     ]}
   ];
 
-  var me = document.currentScript;
+  var me = document.currentScript || (function () {
+    var scripts = document.getElementsByTagName("script");
+    for (var i = scripts.length - 1; i >= 0; i--) {
+      if (scripts[i].src && /site-chrome\.js/i.test(scripts[i].src)) return scripts[i];
+    }
+    return null;
+  })();
   if (!me) return;
   var part = me.getAttribute("data-part");
   var page = (location.pathname.split("/").pop() || "").toLowerCase();
