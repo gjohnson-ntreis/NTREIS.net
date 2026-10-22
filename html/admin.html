@@ -279,6 +279,7 @@ pullBtn.addEventListener('click', async () => {
     const res = await fetch('/members/api/deploy', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
       body: JSON.stringify({ action: 'pull' })
     });
 
