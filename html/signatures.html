@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>NTREIS Email Signatures</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow working column. Pick a name, see the signature on "paper", copy, follow the Outlook steps. */
+:root{
+  --bg:#F5F7FB; --surface:#FFFFFF; --fg:#000744; --muted:#4A5078; --line:#D9DEEC;
+  --accent:#F47729; --blue:#1B2581; --teal:#D4F3F3; --paper:#FFFFFF; --ok:#1B7A4B;
+  --display:"Outfit",Montserrat,Arial,sans-serif; --body:"Montserrat",Arial,Helvetica,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B0F2A;--surface:#141A3D;--fg:#EEF0F8;--muted:#AEB4D3;--line:#2A3260;--blue:#9BA6F0;--teal:#1F3D4A;--paper:#FFFFFF;--ok:#5FD39A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B0F2A;--surface:#141A3D;--fg:#EEF0F8;--muted:#AEB4D3;--line:#2A3260;--blue:#9BA6F0;--teal:#1F3D4A;--paper:#FFFFFF;--ok:#5FD39A;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+header{display:flex;flex-direction:column;gap:8px}
+.eyebrow{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,5vw,38px);line-height:1.1;margin:0;text-wrap:balance}
+.lede{margin:0;color:var(--muted);max-width:60ch}
+.picker{display:flex;flex-direction:column;gap:8px}
+label{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+select,input{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;width:100%;box-sizing:border-box}
+select:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.namefield[hidden]{display:none!important}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.paper{background:var(--paper);padding:28px 24px;overflow-x:auto}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--line)}
+button{font-family:var(--display);font-weight:600;font-size:15px;border:0;border-radius:8px;padding:12px 20px;cursor:pointer;background:var(--accent);color:#FFFFFF}
+button:hover{filter:brightness(1.05)}
+.status{font-size:14px;color:var(--ok);min-height:1.4em}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.steps section{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.steps h2{font-family:var(--display);font-size:17px;margin:0 0 8px}
+.steps ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--muted)}
+.steps b{color:var(--fg)}
+.note{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion:no-preference){button{transition:filter .15s}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Marketing &amp; Communications</span>
+    <h1>NTREIS Email Signatures</h1>
+    <p class="lede">Pick your name, copy your signature, and paste it into Outlook. Every signature uses the same approved layout, so please don't edit the fonts or colors after you paste.</p>
+  </header>
+
+  <div class="picker">
+    <label for="who">Whose signature?</label>
+    <select id="who"></select>
+  </div>
+  <div class="picker namefield" id="namefield" hidden>
+    <label for="first">Your first name</label>
+    <input id="first" type="text" placeholder="e.g. Carrie" autocomplete="given-name">
+  </div>
+
+  <div class="stage">
+    <div class="paper"><div id="sig"></div></div>
+    <div class="bar">
+      <button id="copy" type="button">Copy signature</button>
+      <span class="status" id="status" role="status"></span>
+    </div>
+  </div>
+
+  <div class="steps">
+    <section>
+      <h2>Outlook on Mac</h2>
+      <ol>
+        <li>Click <b>Copy signature</b> above.</li>
+        <li>In Outlook, open <b>Settings</b>, then <b>Signatures</b>.</li>
+        <li>Open your signature, press <b>Cmd+A</b>, then <b>Delete</b>.</li>
+        <li>Press <b>Cmd+V</b> and <b>Save</b>.</li>
+      </ol>
+    </section>
+    <section>
+      <h2>Outlook on Windows</h2>
+      <ol>
+        <li>Click <b>Copy signature</b> above.</li>
+        <li>In Outlook, go to <b>File</b>, <b>Options</b>, <b>Mail</b>, then <b>Signatures</b>.</li>
+        <li>Select your signature, press <b>Ctrl+A</b>, then <b>Delete</b>.</li>
+        <li>Press <b>Ctrl+V</b> and click <b>OK</b>.</li>
+      </ol>
+    </section>
+  </div>
+  <p class="note">Send yourself a test email after you paste. Something wrong, or your details changed? Email Sheree Tomba at sheree@ntreis.net and the page will be updated.</p>
+</div>
+
+<script>
+/* Staff and shared-inbox data live in /data/signatures.json.
+   The admin site's Signatures tab edits that file. */
+let PEOPLE=[], SHARED=[];
+
+/* Images load from /html/sig-images/, as full web addresses,
+   so they show up in every inbox after people paste their signature. */
+const IMG=f=>new URL("/html/sig-images/"+f, location.href).href;
+const A={logo:IMG("ntreis-logo.png"),logoH:53,li:IMG("icon-linkedin.png"),fb:IMG("icon-facebook.png"),x:IMG("icon-x.png")};
+const N="#000744", O="#F47729", F="font-family:Montserrat,Arial,Helvetica,sans-serif;";
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const link=(href,t)=>`<a href="${href}" style="color:${O};font-weight:bold;text-decoration:underline;">${esc(t)}</a>`;
+const zw=s=>esc(s).replace(/ /g,"&zwnj; ");
+const ADDR=`<span style="color:${N};text-decoration:none;">${zw("8101 Windrose Avenue, Suite 1660, Plano, Texas 75024")}</span>`;
+function footer(){
+  const ic=[["li","https://www.linkedin.com/company/ntreis","LinkedIn"],["fb","https://www.facebook.com/NTREIS","Facebook"],["x","https://x.com/NTREIS","X"]]
+    .map(([k,u,a])=>`<td style="padding-right:6px;"><a href="${u}"><img src="${A[k]}" width="22" height="22" alt="${a}" style="display:block;border:0;"></a></td>`).join("");
+  return `<tr><td style="padding:14px 0;"><div style="border-top:1px solid ${O};width:330px;font-size:0;line-height:0;">&nbsp;</div></td></tr>
+<tr><td><table cellpadding="0" cellspacing="0" border="0"><tr><td valign="middle" style="padding-right:16px;"><img src="${A.logo}" width="162" height="${A.logoH}" alt="NTREIS: Where real estate connects" style="display:block;width:162px;height:${A.logoH}px;border:0;margin-left:-11px;"></td><td valign="middle" style="border-left:1px solid #cccccc;padding-left:16px;"><table cellpadding="0" cellspacing="0" border="0"><tr>${ic}</tr></table></td></tr></table></td></tr>`;
+}
+function wrap(inner){return `<table cellpadding="0" cellspacing="0" border="0" width="400" style="width:400px;border-collapse:collapse;${F}font-size:13px;line-height:19px;color:${N};"><tr><td>${inner}</td></tr>${footer()}</table>`}
+const nameLine=(n,c)=>`<div style="font-size:20px;font-weight:bold;color:${N};line-height:26px;">${esc(n)}${c?`<span style="font-size:13px;font-weight:normal;">,&nbsp;${esc(c)}</span>`:""}</div>`;
+function personSig(p){
+  const phones=[p.p&&(p.cell?"O "+p.p:p.p),p.cell&&"C "+p.cell].filter(Boolean).join("&nbsp;&nbsp;|&nbsp;&nbsp;");
+  return wrap(`${p.script?`<img src="${IMG(p.script)}" width="${p.sw}" height="28" alt="${esc(p.n.split(' ')[1]||p.n)}" style="display:block;width:${p.sw}px;height:28px;border:0;margin-bottom:8px;">`:""}${nameLine(p.n,p.c)}<div>${esc(p.t)}</div>
+${phones?`<div style="padding-top:6px;">${phones}</div>`:`<div style="height:6px;line-height:6px;font-size:0;">&nbsp;</div>`}
+<div>${link("mailto:"+p.e,p.e)}&nbsp;&nbsp;<span style="color:#999999;">|</span>&nbsp;&nbsp;${link("https://www.ntreis.net","ntreis.net")}</div>
+<div style="padding-top:2px;font-size:12px;">${ADDR}</div>`);
+}
+function sharedSig(s,first){
+  const n=s.edit?(first.trim()||s.n):s.n;
+  return wrap(`${nameLine(n,"")}${s.lines.map(l=>`<div>${esc(l)}</div>`).join("")}
+<div style="padding-top:${s.lines.length?2:6}px;">${s.pre?esc(s.pre):""}${link("mailto:"+s.e,s.e)}&nbsp;&nbsp;<span style="color:#999999;">|</span>&nbsp;&nbsp;${link("https://www.ntreis.net","ntreis.net")}</div>
+<div style="padding-top:2px;font-size:12px;">${ADDR}</div>
+${s.note?`<div style="padding-top:6px;font-size:12px;font-style:italic;color:#666666;">${esc(s.note)}</div>`:""}`);
+}
+const sel=document.getElementById("who"), sig=document.getElementById("sig"), status=document.getElementById("status"),
+      nf=document.getElementById("namefield"), first=document.getElementById("first");
+function buildOptions(){
+sel.innerHTML=`<optgroup label="Staff">${PEOPLE.map(p=>`<option value="p:${p.id}">${esc(p.n)}</option>`).join("")}</optgroup>
+<optgroup label="Shared inboxes">${SHARED.map(s=>`<option value="s:${s.id}">${esc(s.label)}</option>`).join("")}</optgroup>`;
+}
+function render(){
+  const [k,id]=sel.value.split(":");
+  const s=k==="s"?SHARED.find(x=>x.id===id):null;
+  nf.hidden=!(s&&s.edit);
+  sig.innerHTML=k==="p"?personSig(PEOPLE.find(x=>x.id===id)):sharedSig(s,first.value);
+  status.textContent="";
+}
+sel.addEventListener("change",()=>{try{localStorage.setItem("ntreis-sig-who",sel.value)}catch(e){};render()});
+first.addEventListener("input",render);
+fetch("/data/signatures.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
+  PEOPLE=d.staff; SHARED=d.shared; buildOptions();
+  try{const saved=localStorage.getItem("ntreis-sig-who");if(saved&&[...sel.options].some(o=>o.value===saved))sel.value=saved}catch(e){}
+  render();
+}).catch(()=>{sig.textContent="Signatures could not load. Refresh the page, or contact sheree@ntreis.net.";});
+function selectSig(){const r=document.createRange();r.selectNodeContents(sig);const s=getSelection();s.removeAllRanges();s.addRange(r)}
+document.getElementById("copy").addEventListener("click",async()=>{
+  const html=sig.innerHTML, text=sig.innerText;
+  try{
+    await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([text],{type:"text/plain"})})]);
+    status.textContent="Copied. Now paste it into Outlook.";return;
+  }catch(e){}
+  selectSig();
+  let ok=false;try{ok=document.execCommand("copy")}catch(e){}
+  if(ok){getSelection().removeAllRanges();status.textContent="Copied. Now paste it into Outlook."}
+  else status.textContent="Your signature is selected. Press Cmd+C (Mac) or Ctrl+C (Windows) to copy it.";
+});
+</script>
+
+</body>
+</html>
