@@ -1,6 +1,4 @@
 {
-  "imageBase": "https://ntreis.net/html/sig-images/",
-  "_imageBaseNote": "Permanent HTTPS address where the signature images live. Signatures copied from this page point here, so do not change it after staff install their signatures.",
   "staff": [
     {
       "id": "chris",
