@@ -128,7 +128,7 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
 
 <div id="mainContent" style="padding-top:56px;">
 <nav class="nt-nav">
-  <a href="/"><img src="../img/logo.png" alt="NTREIS" style="height:28px;width:auto;filter:brightness(0) invert(1);"></a>
+  <a href="/"><img src="/img/logo.png" alt="NTREIS" style="height:28px;width:auto;filter:brightness(0) invert(1);"></a>
   <div class="nav-links">
     <a href="/" class="nav-link">Home</a>
     <a href="about.html" class="nav-link">About</a>
@@ -139,10 +139,13 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
 
 <!-- PAGE HERO -->
 <section style="background:#000744;padding:32px 0 24px;">
-  <div class="wrap">
-    <span class="eyebrow eyebrow-o">Internal</span>
-    <h1 style="color:#ffffff;max-width:16ch;">Administration</h1>
-    <p style="color:rgba(255,255,255,0.7);margin-top:16px;max-width:520px;">Site management tools. Starting with code deployment to GitHub.</p>
+  <div class="wrap" style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;">
+    <div>
+      <span class="eyebrow eyebrow-o">Internal</span>
+      <h1 style="color:#ffffff;max-width:16ch;">Administration</h1>
+      <p style="color:rgba(255,255,255,0.7);margin-top:16px;max-width:520px;">Site management tools. Starting with code deployment to GitHub.</p>
+    </div>
+    <a href="/html/monitoring.html" class="btn-admin" style="display:inline-block;text-decoration:none;margin-top:72px;white-space:nowrap;">Site Monitoring</a>
   </div>
 </section>
 
@@ -153,7 +156,6 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
     <div style="display:flex;gap:8px;margin-bottom:24px;border-bottom:1px solid rgba(0,7,68,0.1);padding-bottom:8px;">
       <button id="tabSignatures" class="tab-btn active" style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:10px 20px;border:none;background:transparent;color:#000744;border-bottom:3px solid #F47729;cursor:pointer;">Signatures</button>
       <button id="tabSync" class="tab-btn" style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:10px 20px;border:none;background:transparent;color:#5A5A72;border-bottom:3px solid transparent;cursor:pointer;">Code Sync</button>
-      <button id="tabMonitor" class="tab-btn" style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:10px 20px;border:none;background:transparent;color:#5A5A72;border-bottom:3px solid transparent;cursor:pointer;">Site Monitoring</button>
     </div>
 
     <!-- SIGNATURES TAB -->
@@ -181,6 +183,24 @@ h4{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;line-heigh
 
 Restricted to: html/, data/, js/, and index.html under C:\apps\ntreis.
 GitHub credentials from C:\apps\members-gateway\.env (GITHUB_PAT). Repository: NTREIS.net.</div>
+      </div>
+
+      <div class="admin-card" style="margin-top:32px;">
+        <h3>Members Gateway <span id="gwStatus" class="status-badge status-idle">Idle</span></h3>
+        <p class="body-sm" style="margin-bottom:24px;">Push or pull the members-gateway code and restart scripts. Uses a separate GitHub repository.</p>
+
+        <div class="form-group">
+          <label for="gwCommitMsg">Commit message</label>
+          <input type="text" id="gwCommitMsg" placeholder="Update members-gateway" value="Update members-gateway">
+        </div>
+
+        <button id="gwPushBtn" class="btn-admin">Push Gateway</button>
+        <button id="gwPullBtn" class="btn-admin" style="margin-left:12px;background:#1B2581;">Pull Gateway</button>
+
+        <div class="log-output" id="gwLog">Ready. Use Push Gateway or Pull Gateway.
+
+Restricted to: server.js, restart-*.ps1, package.json under C:\apps\members-gateway.
+Repository: members-gateway (set GITHUB_REPO_NAME_GATEWAY in .env).</div>
       </div>
     </div>
 
@@ -246,9 +266,6 @@ document.getElementById('tabSignatures').addEventListener('click', () => {
 });
 document.getElementById('tabSync').addEventListener('click', () => {
   activateTab(document.getElementById('tabSync'), document.getElementById('panelSync'));
-});
-document.getElementById('tabMonitor').addEventListener('click', () => {
-  window.location.href = '/html/monitoring.html';
 });
 
 // Existing deploy logic
@@ -329,6 +346,76 @@ pullBtn.addEventListener('click', async () => {
   } finally {
     pullBtn.disabled = false;
     pushBtn.disabled = false;
+  }
+});
+
+
+// ---------- Gateway deploy ----------
+const gwPushBtn = document.getElementById('gwPushBtn');
+const gwPullBtn = document.getElementById('gwPullBtn');
+const gwLogEl = document.getElementById('gwLog');
+const gwStatusEl = document.getElementById('gwStatus');
+const gwCommitMsg = document.getElementById('gwCommitMsg');
+
+function setGwStatus(cls, text) {
+  gwStatusEl.className = 'status-badge ' + cls;
+  gwStatusEl.textContent = text;
+}
+function appendGwLog(msg) {
+  gwLogEl.textContent += '\n' + msg;
+  gwLogEl.scrollTop = gwLogEl.scrollHeight;
+}
+
+gwPushBtn.addEventListener('click', async () => {
+  const msg = gwCommitMsg.value.trim() || 'Update members-gateway';
+  gwPushBtn.disabled = true;
+  gwPullBtn.disabled = true;
+  setGwStatus('status-running', 'Running');
+  gwLogEl.textContent = 'Initiating gateway push...\nCommit message: ' + msg + '\n';
+
+  try {
+    const res = await fetch('/members/api/deploy-gateway', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ message: msg })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || ('HTTP ' + res.status));
+    appendGwLog(data.output || data.message || 'Completed.');
+    setGwStatus('status-success', 'Success');
+  } catch (err) {
+    appendGwLog('Error: ' + err.message);
+    setGwStatus('status-error', 'Error');
+  } finally {
+    gwPushBtn.disabled = false;
+    gwPullBtn.disabled = false;
+  }
+});
+
+gwPullBtn.addEventListener('click', async () => {
+  gwPushBtn.disabled = true;
+  gwPullBtn.disabled = true;
+  setGwStatus('status-running', 'Pulling');
+  gwLogEl.textContent = 'Initiating gateway pull from GitHub...\n';
+
+  try {
+    const res = await fetch('/members/api/deploy-gateway', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ action: 'pull' })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || ('HTTP ' + res.status));
+    appendGwLog(data.output || data.message || 'Pull completed.');
+    setGwStatus('status-success', 'Pulled');
+  } catch (err) {
+    appendGwLog('Error: ' + err.message);
+    setGwStatus('status-error', 'Error');
+  } finally {
+    gwPushBtn.disabled = false;
+    gwPullBtn.disabled = false;
   }
 });
 

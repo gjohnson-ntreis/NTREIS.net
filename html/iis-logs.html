@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IIS Logs — NTREIS</title>
+<link rel="icon" href="/img/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:#f7f7fb;color:#1a1a2e;line-height:1.6}
+.nt-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(0,7,68,0.96);backdrop-filter:blur(8px);height:56px;display:flex;align-items:center;padding:0 48px;gap:32px}
+.nt-nav img{height:28px;filter:brightness(0) invert(1)}
+.nav-links{display:flex;gap:24px;margin-left:auto}
+.nav-link{color:rgba(255,255,255,0.8);text-decoration:none;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase}
+.nav-link.act{color:#fff;border-bottom:2px solid #F47729}
+.nav-cta{background:#F47729;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.wrap{max-width:min(1400px,94vw);margin:0 auto;padding:0 48px}
+.eyebrow{display:inline-block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#F47729;margin-bottom:8px}
+h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(2.2rem,5vw,3.5rem);line-height:1.1;color:#fff}
+.body-txt{font-size:16px;color:#3a3a4a}
+.admin-card{background:#fff;border-radius:12px;padding:32px;box-shadow:0 4px 24px rgba(0,7,68,0.06);margin-bottom:24px}
+.btn-admin{background:#F47729;color:#fff;border:none;padding:12px 24px;border-radius:6px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block}
+.gate{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#000744}
+.gate-box{background:#fff;border-radius:12px;padding:48px;text-align:center;max-width:420px}
+.gate-box h2{font-family:'Montserrat',sans-serif;color:#000744;margin:12px 0}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.filters label{font-size:11px;font-weight:600;color:#5A5A72;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:4px}
+.filters input,.filters select{width:100%;height:36px;padding:0 10px;border:1px solid #D1D5DB;border-radius:6px;font-size:13px;font-family:inherit}
+.filters input:focus,.filters select:focus{outline:none;border-color:#000744}
+.log-table{width:100%;border-collapse:collapse;font-size:12px}
+.log-table th{background:#f7f7fb;padding:8px 10px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#5A5A72;border-bottom:1px solid #E5E7EB;cursor:pointer;white-space:nowrap}
+.log-table td{padding:8px 10px;border-bottom:1px solid #F3F4F6;vertical-align:middle}
+.log-table tr:hover td{background:#fafafa}
+.status-ok{color:#16a34a;font-weight:600}
+.status-warn{color:#F47729;font-weight:600}
+.status-err{color:#dc2626;font-weight:600}
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate" style="display:flex;">
+  <div class="gate-box">
+    <span class="eyebrow">Checking access</span>
+    <h2>Verifying staff credentials…</h2>
+  </div>
+</div>
+
+<div id="mainContent" style="display:none;">
+<nav class="nt-nav">
+  <a href="/"><img src="/img/logo.png" alt="NTREIS" style="height:28px;filter:brightness(0) invert(1);"></a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/html/admin.html" class="nav-link">Admin</a>
+    <a href="/html/monitoring.html" class="nav-link">Monitoring</a>
+    <a href="/html/iis-logs.html" class="nav-link act">IIS Logs</a>
+  </div>
+  <a href="https://ntreis.clareityiam.net/idp/login" class="nav-cta">MLS Login</a>
+</nav>
+
+<section style="background:#000744;padding:32px 0 24px;">
+  <div class="wrap">
+    <span class="eyebrow">Internal</span>
+    <h1>IIS Logs</h1>
+    <p style="color:rgba(255,255,255,0.7);margin-top:12px;max-width:560px;">Usage stats and searchable request logs. Restricted to MA staff.</p>
+  </div>
+</section>
+
+<section style="padding:32px 0;">
+  <div class="wrap">
+    <div class="admin-card">
+      <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;margin-bottom:8px;">Usage Stats</h3>
+      <p class="body-txt" style="margin-bottom:16px;">Parsed from recent IIS logs. Shows page hits, unique visitors, browsers, platforms, and top referrers.</p>
+      <button id="statsBtn" class="btn-admin">Refresh Stats</button>
+      <div id="statsSummary" style="margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
+      <div id="statsDetail" style="margin-top:20px;"></div>
+    </div>
+
+    <div class="admin-card">
+      <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;margin-bottom:8px;">Search Logs</h3>
+      <p class="body-txt" style="margin-bottom:16px;">Search recent IIS request logs. Click a column header to sort.</p>
+      <div class="filters">
+        <div><label>IP address</label><input id="f-ip" type="text" placeholder="e.g. 203.0.113.5"></div>
+        <div><label>URL contains</label><input id="f-url" type="text" placeholder="/odata/Property"></div>
+        <div><label>Status</label><select id="f-status"><option value="">Any</option></select></div>
+        <div><label>Source</label><select id="f-source"><option value="">All</option></select></div>
+        <div><label>Method</label><select id="f-method"><option value="">Any</option><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select></div>
+        <div><label>User-Agent contains</label><input id="f-ua" type="text" placeholder="bot, Chrome, curl…"></div>
+        <div><label>From</label><input id="f-from" type="datetime-local"></div>
+        <div><label>To</label><input id="f-to" type="datetime-local"></div>
+        <div style="display:flex;gap:8px;align-items:end;">
+          <button id="logSearchBtn" class="btn-admin">Search</button>
+          <button id="logResetBtn" class="btn-admin" style="background:#6B7280;">Reset</button>
+        </div>
+      </div>
+      <div id="logSummary" style="font-size:12px;color:#5A5A72;margin-bottom:8px;"></div>
+      <div style="overflow:auto;">
+        <table class="log-table">
+          <thead><tr>
+            <th data-col="ts">Time</th>
+            <th data-col="source">Source</th>
+            <th data-col="ip">IP</th>
+            <th data-col="method">Method</th>
+            <th data-col="url">URL</th>
+            <th data-col="status">Status</th>
+            <th data-col="bytes" style="text-align:right">Bytes</th>
+            <th data-col="time" style="text-align:right">ms</th>
+            <th data-col="ua">User-Agent</th>
+          </tr></thead>
+          <tbody id="logBody"><tr><td colspan="9" style="color:#5A5A72;">Search to load results.</td></tr></tbody>
+        </table>
+      </div>
+      <div id="logPager" style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:12px;"></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+const gate = document.getElementById('gate');
+const mainContent = document.getElementById('mainContent');
+
+async function checkAccess() {
+  try {
+    const res = await fetch('/members/api/me', { credentials: 'same-origin' });
+    if (!res.ok) {
+      window.location.href = '/auth/login?returnTo=' + encodeURIComponent(location.pathname);
+      return;
+    }
+    const me = await res.json();
+    const emailStaff = me.email && me.email.toLowerCase().endsWith('@ntreis.net');
+    const hasMA = me.securityClass === 'MA';
+    const hasActive = !me.status || String(me.status).toLowerCase() === 'active';
+    const allowed = (hasMA && hasActive) || (!me.securityClass && emailStaff);
+    if (!allowed) {
+      gate.innerHTML = '<div class="gate-box"><span class="eyebrow">Restricted</span><h2>Access denied</h2><p>This area is limited to active NTREIS staff with security class MA.</p><a href="/" class="btn-admin">Return home</a></div>';
+      return;
+    }
+    gate.style.display = 'none';
+    mainContent.style.display = 'block';
+  } catch (e) {
+    window.location.href = '/auth/login?returnTo=' + encodeURIComponent(location.pathname);
+  }
+}
+checkAccess();
+
+function renderStats(data) {
+  const sum = document.getElementById('statsSummary');
+  const det = document.getElementById('statsDetail');
+  if (data.error) {
+    sum.innerHTML = '';
+    det.innerHTML = '<p style="color:#ef4444;">' + data.error + '</p>';
+    return;
+  }
+  sum.innerHTML = `
+    <div style="background:#f7f7fb;border-radius:8px;padding:16px;text-align:center;">
+      <div style="font-size:28px;font-weight:800;color:#000744;">${data.totalHits || 0}</div>
+      <div style="font-size:12px;color:#5A5A72;text-transform:uppercase;letter-spacing:0.06em;">Page Hits</div>
+    </div>
+    <div style="background:#f7f7fb;border-radius:8px;padding:16px;text-align:center;">
+      <div style="font-size:28px;font-weight:800;color:#000744;">${data.uniqueVisitors || 0}</div>
+      <div style="font-size:12px;color:#5A5A72;text-transform:uppercase;letter-spacing:0.06em;">Unique IPs</div>
+    </div>
+    <div style="background:#f7f7fb;border-radius:8px;padding:16px;text-align:center;">
+      <div style="font-size:28px;font-weight:800;color:#000744;">${(data.filesRead || []).length}</div>
+      <div style="font-size:12px;color:#5A5A72;text-transform:uppercase;letter-spacing:0.06em;">Log Files</div>
+    </div>
+  `;
+  const list = (title, arr) => arr && arr.length
+    ? `<div><strong>${title}</strong><ul style="margin:8px 0 0 18px;color:#3a3a4a;">${arr.map(x => `<li>${x.name} — ${x.count}</li>`).join('')}</ul></div>`
+    : '';
+  det.innerHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:8px;">' +
+    list('Top Pages', data.topPages) + list('Browsers', data.browsers) + list('Platforms', data.platforms) + list('Top Referrers', data.topReferrers) +
+    '</div>';
+}
+
+async function loadStats() {
+  const det = document.getElementById('statsDetail');
+  det.innerHTML = '<p style="color:#5A5A72;">Loading…</p>';
+  try {
+    const res = await fetch('/members/api/stats', { credentials: 'same-origin' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    renderStats(data);
+  } catch (e) {
+    det.innerHTML = '<p style="color:#ef4444;">Failed to load stats: ' + e.message + '</p>';
+  }
+}
+document.getElementById('statsBtn').addEventListener('click', loadStats);
+
+// ---------- IIS Log Search ----------
+(function(){
+  let state = { sort: 'ts', dir: 'desc', page: 1 };
+
+  async function loadFacets(){
+    try {
+      const r = await fetch('/members/api/logs/facets', { credentials: 'same-origin' });
+      const f = await r.json();
+      const st = document.getElementById('f-status');
+      (f.statuses||[]).forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; st.appendChild(o); });
+      const sr = document.getElementById('f-source');
+      (f.sources||[]).forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; sr.appendChild(o); });
+    } catch(e){}
+  }
+
+  function qs(){
+    const p = new URLSearchParams();
+    const ip=document.getElementById('f-ip').value.trim(); if(ip) p.set('ip',ip);
+    const url=document.getElementById('f-url').value.trim(); if(url) p.set('url',url);
+    const status=document.getElementById('f-status').value; if(status) p.set('status',status);
+    const source=document.getElementById('f-source').value; if(source) p.set('source',source);
+    const method=document.getElementById('f-method').value; if(method) p.set('method',method);
+    const ua=document.getElementById('f-ua').value.trim(); if(ua) p.set('ua',ua);
+    const from=document.getElementById('f-from').value; if(from) p.set('from',from.replace('T',' ')+':00');
+    const to=document.getElementById('f-to').value; if(to) p.set('to',to.replace('T',' ')+':59');
+    p.set('sort',state.sort); p.set('dir',state.dir); p.set('page',state.page); p.set('pageSize',100);
+    return p.toString();
+  }
+
+  async function search(page){
+    if(page) state.page = page;
+    const body = document.getElementById('logBody');
+    body.innerHTML = '<tr><td colspan="9" style="color:#5A5A72;">Loading…</td></tr>';
+    try {
+      const r = await fetch('/members/api/logs?' + qs(), { credentials: 'same-origin' });
+      const d = await r.json();
+      if(d.error){ body.innerHTML = '<tr><td colspan="9" style="color:#dc2626">'+d.error+'</td></tr>'; return; }
+      if(!d.rows.length){ body.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#5A5A72;padding:16px">No matching entries.</td></tr>'; document.getElementById('logSummary').textContent=''; document.getElementById('logPager').innerHTML=''; return; }
+      body.innerHTML = d.rows.map(r => {
+        const sc = r.status >= 500 ? 'status-err' : (r.status >= 400 ? 'status-warn' : 'status-ok');
+        const full = (r.uri_stem||'') + (r.uri_query && r.uri_query!=='-' ? '?'+r.uri_query : '');
+        return '<tr>'
+          + '<td style="white-space:nowrap">'+(r.ts||'-')+'</td>'
+          + '<td>'+r.source+'</td>'
+          + '<td style="font-family:monospace">'+(r.client_ip||'-')+'</td>'
+          + '<td>'+(r.method||'-')+'</td>'
+          + '<td style="max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+full.replace(/"/g,'"')+'">'+full+'</td>'
+          + '<td class="'+sc+'">'+(r.status||'-')+'</td>'
+          + '<td style="text-align:right">'+(r.sc_bytes!=null?Number(r.sc_bytes).toLocaleString():'-')+'</td>'
+          + '<td style="text-align:right">'+(r.time_taken??'-')+'</td>'
+          + '<td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#5A5A72" title="'+((r.user_agent||'').replace(/"/g,'"'))+'">'+(r.user_agent||'-')+'</td>'
+          + '</tr>';
+      }).join('');
+      const pages = Math.ceil(d.total / d.pageSize);
+      document.getElementById('logSummary').textContent = d.total.toLocaleString()+' entries · page '+d.page+' of '+pages;
+      const pg = document.getElementById('logPager');
+      pg.innerHTML = '';
+      if(d.page>1){ const b=document.createElement('button'); b.textContent='‹ Prev'; b.className='btn-admin'; b.style.background='#6B7280'; b.onclick=()=>search(d.page-1); pg.appendChild(b); }
+      if(d.page<pages){ const b=document.createElement('button'); b.textContent='Next ›'; b.className='btn-admin'; b.style.background='#6B7280'; b.onclick=()=>search(d.page+1); pg.appendChild(b); }
+    } catch(e){ body.innerHTML = '<tr><td colspan="9" style="color:#dc2626">'+e.message+'</td></tr>'; }
+  }
+
+  document.getElementById('logSearchBtn').addEventListener('click', () => search(1));
+  document.getElementById('logResetBtn').addEventListener('click', () => {
+    ['f-ip','f-url','f-from','f-to','f-ua'].forEach(id=>document.getElementById(id).value='');
+    ['f-status','f-source','f-method'].forEach(id=>document.getElementById(id).value='');
+    state = { sort:'ts', dir:'desc', page:1 };
+    document.querySelectorAll('.log-table th').forEach(h=>h.textContent=h.textContent.replace(/[▾▴]/g,'').trim());
+    search(1);
+  });
+
+  document.querySelectorAll('.log-table th').forEach(h => {
+    h.addEventListener('click', () => {
+      const col = h.dataset.col;
+      if(state.sort===col){ state.dir = state.dir==='asc'?'desc':'asc'; }
+      else { state.sort=col; state.dir='desc'; }
+      document.querySelectorAll('.log-table th').forEach(x=>x.textContent=x.textContent.replace(/[▾▴]/g,'').trim());
+      h.textContent = h.textContent.trim()+' '+(state.dir==='asc'?'▴':'▾');
+      search(1);
+    });
+  });
+
+  loadFacets();
+})();
+</script>
+</body>
+</html>

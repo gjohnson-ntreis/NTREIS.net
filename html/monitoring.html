@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Site Monitoring — NTREIS</title>
+<link rel="icon" href="/img/logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -21,33 +22,28 @@ h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(2.2rem,5v
 .body-txt{font-size:16px;color:#3a3a4a}
 .admin-card{background:#fff;border-radius:12px;padding:32px;box-shadow:0 4px 24px rgba(0,7,68,0.06);margin-bottom:24px}
 .btn-admin{background:#F47729;color:#fff;border:none;padding:12px 24px;border-radius:6px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block}
-.log-output{background:#0d0d1a;color:#a0e0a0;font-family:monospace;font-size:13px;padding:16px;border-radius:8px;white-space:pre-wrap;max-height:320px;overflow:auto}
-.vendor-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,7,68,0.08)}
-.vendor-row:last-child{border-bottom:none}
-.status-dot{width:12px;height:12px;border-radius:50%;background:#ccc;display:inline-block;margin-right:10px}
-.status-up{background:#22c55e}
-.status-down{background:#ef4444}
-.status-unknown{background:#94a3b8}
-#gate{position:fixed;inset:0;z-index:2000;background:rgba(0,7,68,0.96);display:flex;align-items:center;justify-content:center;padding:24px}
-.gate-box{background:#fff;border-radius:12px;padding:40px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-.gate-box h2{color:#000744;margin-bottom:8px;font-size:1.75rem}
-.gate-box p{color:#5A5A72;margin-bottom:24px;font-size:14px}
-#mainContent{display:none}
+.gate{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#000744}
+.gate-box{background:#fff;border-radius:12px;padding:48px;text-align:center;max-width:420px}
+.gate-box h2{font-family:'Montserrat',sans-serif;color:#000744;margin:12px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;margin-top:8px}
+.card-link{display:block;background:#fff;border-radius:12px;padding:32px;box-shadow:0 4px 24px rgba(0,7,68,0.06);text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
+.card-link:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,7,68,0.1)}
+.card-link h3{font-family:'Montserrat',sans-serif;font-weight:700;color:#000744;margin-bottom:8px}
+.card-link p{color:#5A5A72;font-size:15px}
 </style>
 </head>
 <body>
-<div id="gate">
+
+<div id="gate" class="gate" style="display:flex;">
   <div class="gate-box">
-    <span class="eyebrow">Restricted</span>
-    <h2>Admin Access</h2>
-    <p>Verifying staff credentials…</p>
-    <div id="gateError"></div>
+    <span class="eyebrow">Checking access</span>
+    <h2>Verifying staff credentials…</h2>
   </div>
 </div>
 
-<div id="mainContent" style="padding-top:56px;">
+<div id="mainContent" style="display:none;">
 <nav class="nt-nav">
-  <a href="/"><img src="/assets/logo.png" alt="NTREIS"></a>
+  <a href="/"><img src="/img/logo.png" alt="NTREIS" style="height:28px;filter:brightness(0) invert(1);"></a>
   <div class="nav-links">
     <a href="/" class="nav-link">Home</a>
     <a href="/html/admin.html" class="nav-link">Admin</a>
@@ -60,33 +56,21 @@ h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(2.2rem,5v
   <div class="wrap">
     <span class="eyebrow">Internal</span>
     <h1>Site Monitoring</h1>
-    <p style="color:rgba(255,255,255,0.7);margin-top:12px;max-width:560px;">Light status checks for NTREIS vendor sites and internal third-party services.</p>
+    <p style="color:rgba(255,255,255,0.7);margin-top:12px;max-width:560px;">Status and logs for NTREIS services. Restricted to MA staff.</p>
   </div>
 </section>
 
 <section style="padding:32px 0;">
   <div class="wrap">
-    <div class="admin-card">
-      <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;margin-bottom:8px;">Vendor Status</h3>
-      <p class="body-txt" style="margin-bottom:20px;">Checks will run against public endpoints. Results appear below once configured.</p>
-
-      <div id="vendorList">
-        <div class="vendor-row">
-          <div><span class="status-dot status-unknown"></span> <strong>Example Vendor</strong> — https://example.com</div>
-          <span style="color:#5A5A72;font-size:13px;">Not configured</span>
-        </div>
-      </div>
-
-      <div style="margin-top:24px;">
-        <button id="checkBtn" class="btn-admin">Run Checks</button>
-      </div>
-      <div class="log-output" id="log" style="margin-top:16px;">Ready. Add vendor URLs and implement checks.</div>
-    </div>
-
-    <div class="admin-card">
-      <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;margin-bottom:12px;">Add Vendor</h3>
-      <p class="body-txt" style="margin-bottom:16px;">Placeholder — list of vendors and endpoints will be stored and checked from the server.</p>
-      <p style="color:#5A5A72;font-size:14px;">Next step: define the list of public vendor URLs and internal services to monitor.</p>
+    <div class="cards">
+      <a class="card-link" href="/html/vendor-status.html">
+        <h3>Vendor Status</h3>
+        <p>Check public and internal vendor endpoints. Results and history appear here once configured.</p>
+      </a>
+      <a class="card-link" href="/html/iis-logs.html">
+        <h3>IIS Logs</h3>
+        <p>Usage stats and searchable IIS request logs. Filter by IP, status, URL, date, and more.</p>
+      </a>
     </div>
   </div>
 </section>
@@ -100,7 +84,7 @@ async function checkAccess() {
   try {
     const res = await fetch('/members/api/me', { credentials: 'same-origin' });
     if (!res.ok) {
-      window.location.href = '/auth/login?returnTo=' + encodeURIComponent('/html/monitoring.html');
+      window.location.href = '/auth/login?returnTo=' + encodeURIComponent(location.pathname);
       return;
     }
     const me = await res.json();
@@ -115,14 +99,10 @@ async function checkAccess() {
     gate.style.display = 'none';
     mainContent.style.display = 'block';
   } catch (e) {
-    window.location.href = '/auth/login?returnTo=' + encodeURIComponent('/html/monitoring.html');
+    window.location.href = '/auth/login?returnTo=' + encodeURIComponent(location.pathname);
   }
 }
 checkAccess();
-
-document.getElementById('checkBtn').addEventListener('click', () => {
-  document.getElementById('log').textContent = 'Checks not yet implemented.\nAdd vendor list and server-side status endpoint next.';
-});
 </script>
 </body>
 </html>

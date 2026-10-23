@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendor Status — NTREIS</title>
+<link rel="icon" href="/img/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:#f7f7fb;color:#1a1a2e;line-height:1.6}
+.nt-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(0,7,68,0.96);backdrop-filter:blur(8px);height:56px;display:flex;align-items:center;padding:0 48px;gap:32px}
+.nt-nav img{height:28px;filter:brightness(0) invert(1)}
+.nav-links{display:flex;gap:24px;margin-left:auto}
+.nav-link{color:rgba(255,255,255,0.8);text-decoration:none;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase}
+.nav-link.act{color:#fff;border-bottom:2px solid #F47729}
+.nav-cta{background:#F47729;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.wrap{max-width:min(1200px,90vw);margin:0 auto;padding:0 48px}
+.eyebrow{display:inline-block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#F47729;margin-bottom:8px}
+h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(2.2rem,5vw,3.5rem);line-height:1.1;color:#fff}
+.body-txt{font-size:16px;color:#3a3a4a}
+.admin-card{background:#fff;border-radius:12px;padding:32px;box-shadow:0 4px 24px rgba(0,7,68,0.06);margin-bottom:24px}
+.btn-admin{background:#F47729;color:#fff;border:none;padding:12px 24px;border-radius:6px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block}
+.log-output{background:#0d0d1a;color:#a0e0a0;font-family:monospace;font-size:13px;padding:16px;border-radius:8px;white-space:pre-wrap;max-height:320px;overflow:auto}
+.vendor-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,7,68,0.08)}
+.vendor-row:last-child{border-bottom:none}
+.status-dot{width:12px;height:12px;border-radius:50%;background:#ccc;display:inline-block;margin-right:8px}
+.status-unknown{background:#ccc}
+.status-ok{background:#16a34a}
+.status-fail{background:#dc2626}
+.gate{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#000744}
+.gate-box{background:#fff;border-radius:12px;padding:48px;text-align:center;max-width:420px}
+.gate-box h2{font-family:'Montserrat',sans-serif;color:#000744;margin:12px 0}
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate" style="display:flex;">
+  <div class="gate-box">
+    <span class="eyebrow">Checking access</span>
+    <h2>Verifying staff credentials…</h2>
+  </div>
+</div>
+
+<div id="mainContent" style="display:none;">
+<nav class="nt-nav">
+  <a href="/"><img src="/img/logo.png" alt="NTREIS" style="height:28px;filter:brightness(0) invert(1);"></a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/html/admin.html" class="nav-link">Admin</a>
+    <a href="/html/monitoring.html" class="nav-link">Monitoring</a>
+    <a href="/html/vendor-status.html" class="nav-link act">Vendors</a>
+  </div>
+  <a href="https://ntreis.clareityiam.net/idp/login" class="nav-cta">MLS Login</a>
+</nav>
+
+<section style="background:#000744;padding:32px 0 24px;">
+  <div class="wrap">
+    <span class="eyebrow">Internal</span>
+    <h1>Vendor Status</h1>
+    <p style="color:rgba(255,255,255,0.7);margin-top:12px;max-width:560px;">Checks against public and internal vendor endpoints. Restricted to MA staff.</p>
+  </div>
+</section>
+
+<section style="padding:32px 0;">
+  <div class="wrap">
+    <div class="admin-card">
+      <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;margin-bottom:8px;">Vendor Status</h3>
+      <p class="body-txt" style="margin-bottom:20px;">Checks will run against public endpoints. Results appear below once configured.</p>
+
+      <div id="vendorList">
+        <div class="vendor-row" id="clareity-ping">
+          <div><span class="status-dot status-unknown" id="dot-ping"></span> <strong>Clareity</strong> — Ping (login page)</div>
+          <span id="msg-ping" style="color:#5A5A72;font-size:13px;">Not checked</span>
+        </div>
+        <div class="vendor-row" id="clareity-login">
+          <div><span class="status-dot status-unknown" id="dot-login"></span> <strong>Clareity</strong> — Login (dashboard text)</div>
+          <span id="msg-login" style="color:#5A5A72;font-size:13px;">On-demand only (not scheduled)</span>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+        <button id="pingBtn" class="btn-admin">Run Ping</button>
+        <button id="loginBtn" class="btn-admin" style="background:#000744;">Run Login</button>
+      </div>
+      <div class="log-output" id="log" style="margin-top:16px;">Ready. Ping runs every 15 min and on its button. Login runs only when you click its button.</div>
+    </div>
+
+    <div class="admin-card">
+      <span class="eyebrow">Matrix</span>
+      <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;margin-bottom:12px;">MLS Matrix</h3>
+      <p class="body-txt" style="font-size:13px;color:#5A5A72;margin-bottom:12px;">Ping hits the IDP-bypass login: ntrdd.mlsmatrix.com/matrix/login.aspx?noredirect=1</p>
+      <div>
+        <div class="vendor-row" id="matrix-ping">
+          <div><span class="status-dot status-unknown" id="dot-matrix-ping"></span> <strong>Matrix</strong> — Ping</div>
+          <span id="msg-matrix-ping" style="color:#5A5A72;font-size:13px;">Not checked</span>
+        </div>
+        <div class="vendor-row" id="matrix-login">
+          <div><span class="status-dot status-unknown" id="dot-matrix-login"></span> <strong>Matrix</strong> — Login</div>
+          <span id="msg-matrix-login" style="color:#5A5A72;font-size:13px;">On-demand only</span>
+        </div>
+      </div>
+      <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+        <button id="matrixPingBtn" class="btn-admin">Run Ping</button>
+        <button id="matrixLoginBtn" class="btn-admin" style="background:#000744;">Run Login</button>
+      </div>
+      <div class="log-output" id="matrix-log" style="margin-top:16px;">Ready.</div>
+    </div>
+
+    <div class="admin-card">
+      <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;margin-bottom:12px;">Add Vendor</h3>
+      <p class="body-txt" style="margin-bottom:16px;">Placeholder — list of vendors and endpoints will be stored and checked from the server.</p>
+      <p style="color:#5A5A72;font-size:14px;">Next step: define the list of public vendor URLs and internal services to monitor.</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+const gate = document.getElementById('gate');
+const mainContent = document.getElementById('mainContent');
+
+async function checkAccess() {
+  try {
+    const res = await fetch('/members/api/me', { credentials: 'same-origin' });
+    if (!res.ok) {
+      window.location.href = '/auth/login?returnTo=' + encodeURIComponent(location.pathname);
+      return;
+    }
+    const me = await res.json();
+    const emailStaff = me.email && me.email.toLowerCase().endsWith('@ntreis.net');
+    const hasMA = me.securityClass === 'MA';
+    const hasActive = !me.status || String(me.status).toLowerCase() === 'active';
+    const allowed = (hasMA && hasActive) || (!me.securityClass && emailStaff);
+    if (!allowed) {
+      gate.innerHTML = '<div class="gate-box"><span class="eyebrow">Restricted</span><h2>Access denied</h2><p>This area is limited to active NTREIS staff with security class MA.</p><a href="/" class="btn-admin">Return home</a></div>';
+      return;
+    }
+    gate.style.display = 'none';
+    mainContent.style.display = 'block';
+  } catch (e) {
+    window.location.href = '/auth/login?returnTo=' + encodeURIComponent(location.pathname);
+  }
+}
+checkAccess();
+
+function applyStatus(id, data) {
+  const dot = document.getElementById('dot-' + id);
+  const msg = document.getElementById('msg-' + id);
+  if (!data || data.ok === null) {
+    dot.className = 'status-dot status-unknown';
+    msg.textContent = data && data.message ? data.message : 'Not checked';
+    return;
+  }
+  dot.className = 'status-dot ' + (data.ok ? 'status-ok' : 'status-fail');
+  const when = data.checkedAt ? new Date(data.checkedAt).toLocaleString() : '';
+  msg.textContent = data.message + (when ? ' · ' + when : '');
+}
+
+async function refreshStatus() {
+  try {
+    const res = await fetch('/members/api/monitor/clareity', { credentials: 'same-origin' });
+    if (!res.ok) return;
+    const data = await res.json();
+    applyStatus('ping', data.ping);
+    applyStatus('login', data.login);
+  } catch (_) {}
+}
+
+async function runCheck(which) {
+  const log = document.getElementById('log');
+  log.textContent = 'Running ' + which + '…';
+  try {
+    const res = await fetch('/members/api/monitor/clareity/run', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ which })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
+    applyStatus('ping', data.status.ping);
+    applyStatus('login', data.status.login);
+    const msg = which === 'ping' ? (data.status.ping.message || '') : (data.status.login.message || '');
+    log.textContent = which.charAt(0).toUpperCase() + which.slice(1) + ' complete.\n' + msg;
+  } catch (e) {
+    log.textContent = 'Error: ' + e.message;
+  }
+}
+document.getElementById('pingBtn').addEventListener('click', () => runCheck('ping'));
+document.getElementById('loginBtn').addEventListener('click', () => runCheck('login'));
+
+refreshStatus();
+setInterval(refreshStatus, 60 * 1000);
+
+async function refreshMatrix() {
+  try {
+    const res = await fetch('/members/api/monitor/matrix', { credentials: 'same-origin' });
+    if (!res.ok) return;
+    const data = await res.json();
+    applyStatus('matrix-ping', data.ping);
+    applyStatus('matrix-login', data.login);
+  } catch (_) {}
+}
+
+async function runMatrix(which) {
+  const log = document.getElementById('matrix-log');
+  log.textContent = 'Running Matrix ' + which + '…';
+  try {
+    const res = await fetch('/members/api/monitor/matrix/run', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ which })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
+    applyStatus('matrix-ping', data.status.ping);
+    applyStatus('matrix-login', data.status.login);
+    const msg = which === 'ping' ? (data.status.ping.message || '') : (data.status.login.message || '');
+    log.textContent = which.charAt(0).toUpperCase() + which.slice(1) + ' complete.\n' + msg;
+  } catch (e) {
+    log.textContent = 'Error: ' + e.message;
+  }
+}
+document.getElementById('matrixPingBtn').addEventListener('click', () => runMatrix('ping'));
+document.getElementById('matrixLoginBtn').addEventListener('click', () => runMatrix('login'));
+refreshMatrix();
+setInterval(refreshMatrix, 60 * 1000);
+
+</script>
+</body>
+</html>
