@@ -315,11 +315,11 @@ pullBtn.addEventListener('click', async () => {
       body: JSON.stringify({ action: 'pull' })
     });
 
+    const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      throw new Error('HTTP ' + res.status + ' — backend endpoint not yet implemented or returned an error.');
+      throw new Error(data.message || ('HTTP ' + res.status));
     }
 
-    const data = await res.json().catch(() => ({}));
     appendLog(data.output || data.message || 'Pull completed.');
     setStatus('status-success', 'Pulled');
   } catch (err) {
